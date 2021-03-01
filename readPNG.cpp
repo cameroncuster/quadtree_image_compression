@@ -26,7 +26,7 @@ olc::Pixel **readPNG(const char *filename, unsigned &width, unsigned &height)
    // and integer) for alignment reasons.  This code calculates that padding
    unsigned nbytes = width * 4;
    {
-      unsigned pad = 0 ; 
+      unsigned pad = 0 ;
       if (width % 4 != 0) pad = 4 - width % 4;
       width += pad;
    }
@@ -36,7 +36,7 @@ olc::Pixel **readPNG(const char *filename, unsigned &width, unsigned &height)
    for (int row = 0 ; row < (int)height ; row++, pixels += nbytes)
       memcpy(image[row], pixels, nbytes);
 
-   // clean up after ourselves 
+   // clean up after ourselves
    pixels -= (nbytes * height);
    free(pixels);
 

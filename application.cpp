@@ -30,7 +30,7 @@ bool Application::OnUserCreate()
 // This member function is called repeatedly until the program exits.
 bool Application::OnUserUpdate(float fElapsedTime)
 {
-   // This draws the QR image into the window.
+   // This draws the image into the window.
    for (int y = 0; y < ScreenHeight(); y++)
       for (int x = 0; x < ScreenWidth() / 2; x++)
       {
@@ -40,7 +40,7 @@ bool Application::OnUserUpdate(float fElapsedTime)
          Draw(x + width, y, byteToGreyscalePixel(greyScale[y][x]));
       }
 
-   // If the escape or 'q' key is pressed, exit 
+   // If the escape or 'q' key is pressed, exit
    return (!(GetKey(olc::Key::ESCAPE).bPressed) &&
            !(GetKey(olc::Key::Q).bPressed));
 }
