@@ -23,11 +23,20 @@ vector<pair<unsigned, unsigned>> QuadTree::getImageBorders( ) const
 	return { { 0, 0 } };
 }
 
-unsigned QuadTree::subdivide( unsigned char **gray, node *quadrant )
+void QuadTree::subdivide( unsigned char **gray, node *quadrant )
 {
 	if( !needSubdivide( gray, quadrant ) )
-		return quadrant->pixelValue;
-	return quadrant->pixelValue;
+	{
+		quadrant->pixelValue = evalSubdivision( gray, quadrant );
+		return;
+	}
+
+	subdivide( gray, quadrant->nw );
+	subdivide( gray, quadrant->sw );
+	subdivide( gray, quadrant->ne );
+	subdivide( gray, quadrant->se );
+
+	quadrant->pixelValue = evalSubdivision( gray, quadrant ); // potentially the average values of the children...
 }
 
 bool QuadTree::needSubdivide( unsigned char **gray, node *quadrant ) const
@@ -48,6 +57,17 @@ bool QuadTree::needSubdivide( unsigned char **gray, node *quadrant ) const
 		}
 	}
 	return 1;
+}
+
+unsigned QuadTree::evalSubdivision( unsigned char **gray, node *quadrant ) const
+{
+	unsigned i, j;
+	unsigned sum = 0;
+	for( i = quadrant->topLeft.y; i < quadrant->bottomRight.y; i++ )
+		for( j = quadrant->topLeft.x; j < quadrant->bottomRight.x; j++ )
+			sum += gray[i][j];
+	return sum / ( ( quadrant->bottomRight.y - quadrant->topLeft.y ) *
+			( quadrant->bottomRight.x - quadrant->topLeft.x ) );
 }
 
 unsigned char **QuadTree::buildImage( )

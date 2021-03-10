@@ -41,8 +41,9 @@ class QuadTree
 	vector<pair<unsigned, unsigned>> getImageBorders( ) const;
 
 	private:
-	unsigned subdivide( unsigned char **gray, node *quadrant );
+	void subdivide( unsigned char **gray, node *quadrant );
 	bool needSubdivide( unsigned char **gray, node *quadrant ) const;
+	unsigned evalSubdivision( unsigned char **gray, node *quadrant ) const;
 	unsigned char **buildImage( );
 };
 #endif
