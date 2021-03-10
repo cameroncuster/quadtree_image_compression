@@ -3,7 +3,6 @@ SOURCE = application.cpp \
          readPNG.cpp \
          lodepng.cpp \
 		 quadTree.cpp \
-		 point.cpp \
          alloc2d.cpp
 
 OBJS = $(SOURCE:.cpp=.o)

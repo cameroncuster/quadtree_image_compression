@@ -3,10 +3,13 @@
 
 using namespace std;
 
-QuadTree::QuadTree( unsigned char **gray, unsigned char tolerance, unsigned width, unsigned height )
+QuadTree::QuadTree( const unsigned char **gray, const unsigned char tolerance, const unsigned width, const unsigned height )
 {
 	margin = tolerance;
-	// construct node
+	pair<unsigned, unsigned> tl = { 0, 0 };
+	pair<unsigned, unsigned> br = { width - 1, height - 1 };
+	root = new node( tl, br, evalSubdivision( gray, tl, br ) );
+	subdivide( gray, root );
 }
 
 QuadTree::~QuadTree( )
@@ -23,51 +26,70 @@ vector<pair<unsigned, unsigned>> QuadTree::getImageBorders( ) const
 	return { { 0, 0 } };
 }
 
-void QuadTree::subdivide( unsigned char **gray, node *quadrant )
+void QuadTree::subdivide( const unsigned char **&gray, node *quadrant )
 {
-	if( !needSubdivide( gray, quadrant ) )
+	pair<unsigned, unsigned> nwtl = quadrant->topLeft;
+	pair<unsigned, unsigned> nwbr = { quadrant->bottomRight.first / 2, quadrant->bottomRight.second / 2 };
+	pair<unsigned, unsigned> swtl = { quadrant->topLeft.first, quadrant->topLeft.second / 2 };
+	pair<unsigned, unsigned> swbr = { quadrant->bottomRight.first / 2, quadrant->bottomRight.second };
+	pair<unsigned, unsigned> netl = { quadrant->topLeft.first / 2, quadrant->bottomRight.second };
+	pair<unsigned, unsigned> nebr = { quadrant->bottomRight.first, quadrant->bottomRight.second / 2 };
+	pair<unsigned, unsigned> setl = { quadrant->topLeft.first / 2, quadrant->topLeft.second / 2 };
+	pair<unsigned, unsigned> sebr = quadrant->bottomRight;
+
+	if( needSubdivide( gray, quadrant->pixelValue, nwtl, nwbr ) )
 	{
-		quadrant->pixelValue = evalSubdivision( gray, quadrant );
-		return;
+		quadrant->nw = new node( nwtl, nwbr, evalSubdivision( gray, nwtl, nwbr ) );
+		subdivide( gray, quadrant->nw );
 	}
-
-	subdivide( gray, quadrant->nw );
-	subdivide( gray, quadrant->sw );
-	subdivide( gray, quadrant->ne );
-	subdivide( gray, quadrant->se );
-
-	quadrant->pixelValue = evalSubdivision( gray, quadrant ); // potentially the average values of the children...
+	if( needSubdivide( gray, quadrant->pixelValue, swtl, swbr ) )
+	{
+		quadrant->sw = new node( swtl, swbr, evalSubdivision( gray, swtl, swbr ) );
+		subdivide( gray, quadrant->sw );
+	}
+	if( needSubdivide( gray, quadrant->pixelValue, netl, nebr ) )
+	{
+		quadrant->ne = new node( netl, nebr, evalSubdivision( gray, netl, nebr ) );
+		subdivide( gray, quadrant->ne );
+	}
+	if( needSubdivide( gray, quadrant->pixelValue, setl, sebr ) )
+	{
+		quadrant->se = new node( setl, sebr, evalSubdivision( gray, setl, sebr ) );
+		subdivide( gray, quadrant->se );
+	}
 }
 
-bool QuadTree::needSubdivide( unsigned char **gray, node *quadrant ) const
+bool QuadTree::needSubdivide( const unsigned char **&gray, const unsigned char rep, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const
 {
 	unsigned i, j;
-	unsigned char mx = gray[ quadrant->topLeft.y ][ quadrant->topLeft.x ],
-	mn = gray[ quadrant->topLeft.y ][ quadrant->topLeft.x ];
-	for( i = quadrant->topLeft.y; i < quadrant->bottomRight.y; i++ )
+	unsigned char mx = gray[ topLeft.second ][ topLeft.first ];
+	unsigned char mn = gray[ topLeft.second ][ topLeft.first ];
+	for( i = topLeft.second; i < bottomRight.second; i++ )
 	{
-		for( j = quadrant->topLeft.x; j < quadrant->bottomRight.x; j++ )
+		for( j = topLeft.first; j < bottomRight.first; j++ )
 		{
 			if( gray[i][j] > mx )
 				mx = gray[i][j];
 			if( gray[i][j] < mn )
 				mn = gray[i][j];
-			if( mx - mn > margin )
+			if( abs( rep - mx ) > margin )
+				return 0;
+			if( abs( rep - mn ) > margin )
 				return 0;
 		}
 	}
 	return 1;
 }
 
-unsigned QuadTree::evalSubdivision( unsigned char **gray, node *quadrant ) const
+unsigned QuadTree::evalSubdivision( const unsigned char **&gray, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const
 {
 	unsigned i, j;
 	unsigned sum = 0;
-	for( i = quadrant->topLeft.y; i < quadrant->bottomRight.y; i++ )
-		for( j = quadrant->topLeft.x; j < quadrant->bottomRight.x; j++ )
+	for( i = topLeft.second; i < bottomRight.second; i++ )
+		for( j = topLeft.first; j < bottomRight.first; j++ )
 			sum += gray[i][j];
-	return sum / ( ( quadrant->bottomRight.y - quadrant->topLeft.y ) *
-			( quadrant->bottomRight.x - quadrant->topLeft.x ) );
+	return sum / ( ( bottomRight.second - topLeft.second ) *
+			( bottomRight.first - topLeft.first ) );
 }
 
 unsigned char **QuadTree::buildImage( )

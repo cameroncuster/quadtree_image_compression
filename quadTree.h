@@ -1,6 +1,5 @@
 #ifndef QUADTREE_H
 #define QUADTREE_H
-#include "point.h"
 #include <vector>
 #include <utility>
 
@@ -11,15 +10,15 @@ class QuadTree
 	unsigned char margin;
 	struct node
 	{
-		Point topLeft;
-		Point bottomRight;
+		pair<unsigned, unsigned> topLeft;
+		pair<unsigned, unsigned> bottomRight;
 		unsigned char pixelValue;
 		node* nw;
 		node* sw;
 		node* ne;
 		node* se;
 
-		node( Point tl, unsigned char pixVal, Point br,
+		node( pair<unsigned, unsigned> tl, pair<unsigned, unsigned> br, unsigned char pixVal,
 				node *northwest = nullptr, node *southwest = nullptr,
 				node *northeast = nullptr, node *southeast = nullptr ):
 			topLeft( tl ), bottomRight( br ), pixelValue( pixVal ),
@@ -34,16 +33,16 @@ class QuadTree
 	unsigned compression;
 
 	public:
-	QuadTree( unsigned char **gray, unsigned char tolerance, unsigned width, unsigned height );
+	QuadTree( const unsigned char **gray, const unsigned char tolerance, const unsigned width, const unsigned height );
 	~QuadTree( );
 
 	unsigned char **getImage( ) const;
 	vector<pair<unsigned, unsigned>> getImageBorders( ) const;
 
 	private:
-	void subdivide( unsigned char **gray, node *quadrant );
-	bool needSubdivide( unsigned char **gray, node *quadrant ) const;
-	unsigned evalSubdivision( unsigned char **gray, node *quadrant ) const;
+	void subdivide( const unsigned char **&gray, node *quadrant );
+	bool needSubdivide( const unsigned char **&gray, const unsigned char rep, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const;
+	unsigned evalSubdivision( const unsigned char **&gray, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const;
 	unsigned char **buildImage( );
 };
 #endif
