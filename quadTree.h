@@ -33,16 +33,16 @@ class QuadTree
 	unsigned compression;
 
 	public:
-	QuadTree( const unsigned char **gray, const unsigned char tolerance, const unsigned width, const unsigned height );
+	QuadTree( unsigned char **gray, const unsigned char tolerance, const unsigned width, const unsigned height );
 	~QuadTree( );
 
 	unsigned char **getImage( ) const;
 	vector<pair<unsigned, unsigned>> getImageBorders( ) const;
 
 	private:
-	void subdivide( const unsigned char **&gray, node *quadrant );
-	bool needSubdivide( const unsigned char **&gray, const unsigned char rep, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const;
-	unsigned evalSubdivision( const unsigned char **&gray, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const;
+	void subdivide( unsigned char **&gray, node *quadrant );
+	bool needSubdivide( unsigned char **&gray, const unsigned char rep, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const;
+	unsigned evalSubdivision( unsigned char **&gray, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const;
 	unsigned char **buildImage( );
 };
 #endif

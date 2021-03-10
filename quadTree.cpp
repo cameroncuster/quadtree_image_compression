@@ -3,7 +3,7 @@
 
 using namespace std;
 
-QuadTree::QuadTree( const unsigned char **gray, const unsigned char tolerance, const unsigned width, const unsigned height )
+QuadTree::QuadTree( unsigned char **gray, const unsigned char tolerance, const unsigned width, const unsigned height )
 {
 	margin = tolerance;
 	pair<unsigned, unsigned> tl = { 0, 0 };
@@ -26,7 +26,7 @@ vector<pair<unsigned, unsigned>> QuadTree::getImageBorders( ) const
 	return { { 0, 0 } };
 }
 
-void QuadTree::subdivide( const unsigned char **&gray, node *quadrant )
+void QuadTree::subdivide( unsigned char **&gray, node *quadrant )
 {
 	pair<unsigned, unsigned> nwtl = quadrant->topLeft;
 	pair<unsigned, unsigned> nwbr = { quadrant->bottomRight.first / 2, quadrant->bottomRight.second / 2 };
@@ -59,7 +59,7 @@ void QuadTree::subdivide( const unsigned char **&gray, node *quadrant )
 	}
 }
 
-bool QuadTree::needSubdivide( const unsigned char **&gray, const unsigned char rep, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const
+bool QuadTree::needSubdivide( unsigned char **&gray, const unsigned char rep, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const
 {
 	unsigned i, j;
 	unsigned char mx = gray[ topLeft.second ][ topLeft.first ];
@@ -81,7 +81,7 @@ bool QuadTree::needSubdivide( const unsigned char **&gray, const unsigned char r
 	return 1;
 }
 
-unsigned QuadTree::evalSubdivision( const unsigned char **&gray, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const
+unsigned QuadTree::evalSubdivision( unsigned char **&gray, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const
 {
 	unsigned i, j;
 	unsigned sum = 0;

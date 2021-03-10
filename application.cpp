@@ -1,4 +1,5 @@
 #include "application.h"
+#include "quadTree.h"
 #include <iostream>
 
 using namespace std;
@@ -24,6 +25,8 @@ bool Application::OnUserCreate()
 {
    // convert RGBA Pixels into greyscale values.  0 = black ... 255 = white
    greyScale = convertToGreyscale(image, width, height);
+   // instantiate the QuadTree
+   QuadTree qt( greyScale, 1, width, height );
    return true;
 }
 
