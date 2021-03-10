@@ -10,6 +10,7 @@ class QuadTree
 	unsigned char margin;
 	struct node
 	{
+		pair<unsigned, unsigned> point;
 		unsigned char pixelValue;
 		unsigned height, width;
 		node *children[4];
