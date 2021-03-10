@@ -1,5 +1,6 @@
 #ifndef QUADTREE_H
 #define QUADTREE_H
+#include "point.h"
 #include <vector>
 #include <utility>
 
@@ -10,10 +11,19 @@ class QuadTree
 	unsigned char margin;
 	struct node
 	{
-		pair<unsigned, unsigned> point;
+		Point topLeft;
+		Point bottomRight;
 		unsigned char pixelValue;
-		unsigned height, width;
-		node *children[4];
+		node* nw;
+		node* sw;
+		node* ne;
+		node* se;
+
+		node( Point tl, unsigned char pixVal, Point br,
+				node *northwest = nullptr, node *southwest = nullptr,
+				node *northeast = nullptr, node *southeast = nullptr ):
+			topLeft( tl ), bottomRight( br ), pixelValue( pixVal ),
+			nw( northwest ), sw( southwest ), ne( northeast ), se( southeast ) { }
 	};
 	node *root;
 
@@ -23,17 +33,16 @@ class QuadTree
 	unsigned byteCount; // malloc but don't free and ask Valgrind how much I used...
 	unsigned compression;
 
-	vector<pair<unsigned, unsigned>> borders;
-
 	public:
-	QuadTree( unsigned char **gray, unsigned char magin, unsigned width, unsigned height );
+	QuadTree( unsigned char **gray, unsigned char tolerance, unsigned width, unsigned height );
 	~QuadTree( );
 
 	unsigned char **getImage( ) const;
 	vector<pair<unsigned, unsigned>> getImageBorders( ) const;
 
 	private:
-	void buildTree( unsigned char **gray, unsigned char margin, unsigned width, unsigned height );
+	unsigned subdivide( unsigned char **gray, node *quadrant );
+	bool needSubdivide( unsigned char **gray, node *quadrant ) const;
 	unsigned char **buildImage( );
 };
 #endif
