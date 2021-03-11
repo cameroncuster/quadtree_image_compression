@@ -1,29 +1,28 @@
 #include "quadTree.h"
+#include "alloc2d.h"
 #include <cmath>
 
 using namespace std;
 
 QuadTree::QuadTree( unsigned char **gray, const unsigned char tolerance, const unsigned width, const unsigned height )
 {
-	margin = tolerance;
 	pair<unsigned, unsigned> tl = { 0, 0 };
 	pair<unsigned, unsigned> br = { width - 1, height - 1 };
+	pixelCount = width * height;
+	nodeCount = 0;
+	leafNodeCount = 0;
+	byteCount = 0; // malloc but don't free and ask Valgrind how much I used...
+	compression = 0;
+	margin = tolerance;
 	root = new node( tl, br, evalSubdivision( gray, tl, br ) );
 	subdivide( gray, root );
 }
 
-QuadTree::~QuadTree( )
+unsigned char **QuadTree::draw( const bool lines ) const
 {
-}
-
-unsigned char **QuadTree::getImage( ) const
-{
-	return nullptr;
-}
-
-vector<pair<unsigned, unsigned>> QuadTree::getImageBorders( ) const
-{
-	return { { 0, 0 } };
+	unsigned char **gray = alloc2D_byte( root->bottomRight.first, root->bottomRight.second );
+	// build the image from the tree
+	return gray; // the image memory must be freed
 }
 
 void QuadTree::subdivide( unsigned char **&gray, node *quadrant )
@@ -41,21 +40,25 @@ void QuadTree::subdivide( unsigned char **&gray, node *quadrant )
 	{
 		quadrant->nw = new node( nwtl, nwbr, evalSubdivision( gray, nwtl, nwbr ) );
 		subdivide( gray, quadrant->nw );
+		nodeCount++;
 	}
 	if( needSubdivide( gray, quadrant->pixelValue, swtl, swbr ) )
 	{
 		quadrant->sw = new node( swtl, swbr, evalSubdivision( gray, swtl, swbr ) );
 		subdivide( gray, quadrant->sw );
+		nodeCount++;
 	}
 	if( needSubdivide( gray, quadrant->pixelValue, netl, nebr ) )
 	{
 		quadrant->ne = new node( netl, nebr, evalSubdivision( gray, netl, nebr ) );
 		subdivide( gray, quadrant->ne );
+		nodeCount++;
 	}
 	if( needSubdivide( gray, quadrant->pixelValue, setl, sebr ) )
 	{
 		quadrant->se = new node( setl, sebr, evalSubdivision( gray, setl, sebr ) );
 		subdivide( gray, quadrant->se );
+		nodeCount++;
 	}
 }
 

@@ -34,10 +34,8 @@ class QuadTree
 
 	public:
 	QuadTree( unsigned char **gray, const unsigned char tolerance, const unsigned width, const unsigned height );
-	~QuadTree( );
 
-	unsigned char **getImage( ) const;
-	vector<pair<unsigned, unsigned>> getImageBorders( ) const;
+	unsigned char **draw( const bool lines ) const;
 
 	private:
 	void subdivide( unsigned char **&gray, node *quadrant );
