@@ -33,12 +33,14 @@ unsigned char **QuadTree::draw( const bool lines ) const
 void QuadTree::drawImage( unsigned char **&gray, const node *quadrant, const bool lines ) const
 {
 	unsigned i, j;
-	if( quadrant == nullptr )
+	if( quadrant->nw == nullptr && quadrant->sw == nullptr &&
+			quadrant->ne == nullptr && quadrant->se == nullptr ) // less operations than overwriting every recursive call
+	{
+		for( i = quadrant->topLeft.second; i < quadrant->bottomRight.second; i++ )
+			for( j = quadrant->topLeft.first; j < quadrant->bottomRight.first; j++ )
+				gray[i][j] = quadrant->pixelValue; // handle drawing the lines
 		return;
-
-	for( i = quadrant->topLeft.second; i < quadrant->bottomRight.second; i++ )
-		for( j = quadrant->topLeft.first; j < quadrant->bottomRight.first; j++ )
-			gray[i][j] = quadrant->pixelValue; // handle drawing the lines
+	}
 
 	drawImage( gray, quadrant->nw, lines );
 	drawImage( gray, quadrant->ne, lines );
@@ -73,43 +75,43 @@ QuadTree::node *QuadTree::subdivide( unsigned char **&gray, pair<unsigned, unsig
 }
 
 /*
-void QuadTree::subdivide( unsigned char **&gray, node *quadrant )
-{
-	pair<unsigned, unsigned> nwtl = quadrant->topLeft;
-	pair<unsigned, unsigned> nwbr = { quadrant->bottomRight.first / 2, quadrant->bottomRight.second / 2 };
-	pair<unsigned, unsigned> swtl = { quadrant->topLeft.first, quadrant->topLeft.second / 2 };
-	pair<unsigned, unsigned> swbr = { quadrant->bottomRight.first / 2, quadrant->bottomRight.second };
-	pair<unsigned, unsigned> netl = { quadrant->topLeft.first / 2, quadrant->bottomRight.second };
-	pair<unsigned, unsigned> nebr = { quadrant->bottomRight.first, quadrant->bottomRight.second / 2 };
-	pair<unsigned, unsigned> setl = { quadrant->topLeft.first / 2, quadrant->topLeft.second / 2 };
-	pair<unsigned, unsigned> sebr = quadrant->bottomRight;
+   void QuadTree::subdivide( unsigned char **&gray, node *quadrant )
+   {
+   pair<unsigned, unsigned> nwtl = quadrant->topLeft;
+   pair<unsigned, unsigned> nwbr = { quadrant->bottomRight.first / 2, quadrant->bottomRight.second / 2 };
+   pair<unsigned, unsigned> swtl = { quadrant->topLeft.first, quadrant->topLeft.second / 2 };
+   pair<unsigned, unsigned> swbr = { quadrant->bottomRight.first / 2, quadrant->bottomRight.second };
+   pair<unsigned, unsigned> netl = { quadrant->topLeft.first / 2, quadrant->bottomRight.second };
+   pair<unsigned, unsigned> nebr = { quadrant->bottomRight.first, quadrant->bottomRight.second / 2 };
+   pair<unsigned, unsigned> setl = { quadrant->topLeft.first / 2, quadrant->topLeft.second / 2 };
+   pair<unsigned, unsigned> sebr = quadrant->bottomRight;
 
-	if( needSubdivide( gray, quadrant->pixelValue, nwtl, nwbr ) )
-	{
-		quadrant->nw = new node( nwtl, nwbr, evalSubdivision( gray, nwtl, nwbr ) );
-		subdivide( gray, quadrant->nw ); // stack blows and SEG faults
-		nodeCount++;
-	}
-	if( needSubdivide( gray, quadrant->pixelValue, swtl, swbr ) )
-	{
-		quadrant->sw = new node( swtl, swbr, evalSubdivision( gray, swtl, swbr ) );
-		subdivide( gray, quadrant->sw );
-		nodeCount++;
-	}
-	if( needSubdivide( gray, quadrant->pixelValue, netl, nebr ) )
-	{
-		quadrant->ne = new node( netl, nebr, evalSubdivision( gray, netl, nebr ) );
-		subdivide( gray, quadrant->ne );
-		nodeCount++;
-	}
-	if( needSubdivide( gray, quadrant->pixelValue, setl, sebr ) )
-	{
-		quadrant->se = new node( setl, sebr, evalSubdivision( gray, setl, sebr ) );
-		subdivide( gray, quadrant->se );
-		nodeCount++;
-	}
-}
-*/
+   if( needSubdivide( gray, quadrant->pixelValue, nwtl, nwbr ) )
+   {
+   quadrant->nw = new node( nwtl, nwbr, evalSubdivision( gray, nwtl, nwbr ) );
+   subdivide( gray, quadrant->nw ); // stack blows and SEG faults
+   nodeCount++;
+   }
+   if( needSubdivide( gray, quadrant->pixelValue, swtl, swbr ) )
+   {
+   quadrant->sw = new node( swtl, swbr, evalSubdivision( gray, swtl, swbr ) );
+   subdivide( gray, quadrant->sw );
+   nodeCount++;
+   }
+   if( needSubdivide( gray, quadrant->pixelValue, netl, nebr ) )
+   {
+   quadrant->ne = new node( netl, nebr, evalSubdivision( gray, netl, nebr ) );
+   subdivide( gray, quadrant->ne );
+   nodeCount++;
+   }
+   if( needSubdivide( gray, quadrant->pixelValue, setl, sebr ) )
+   {
+   quadrant->se = new node( setl, sebr, evalSubdivision( gray, setl, sebr ) );
+   subdivide( gray, quadrant->se );
+   nodeCount++;
+   }
+   }
+ */
 
 bool QuadTree::needSubdivide( unsigned char **&gray, const unsigned char rep, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const
 {
