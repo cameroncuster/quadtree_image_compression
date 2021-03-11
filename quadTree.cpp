@@ -25,7 +25,7 @@ QuadTree::~QuadTree( )
 
 unsigned char **QuadTree::draw( const bool lines ) const
 {
-	unsigned char **gray = alloc2D_byte( root->bottomRight.first, root->bottomRight.second );
+	unsigned char **gray = alloc2D_byte( root->bottomRight.first + 1, root->bottomRight.second + 1 );
 	drawImage( gray, root, lines );
 	return gray; // the image memory must be freed
 }
