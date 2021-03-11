@@ -15,7 +15,7 @@ QuadTree::QuadTree( unsigned char **gray, const unsigned char tolerance, const u
 	compression = 0;
 	margin = tolerance;
 	root = new node( tl, br, evalSubdivision( gray, tl, br ) );
-	subdivide( gray, root );
+	subdivide( gray, tl, br );
 }
 
 QuadTree::~QuadTree( )
@@ -46,6 +46,33 @@ void QuadTree::drawImage( unsigned char **&gray, const node *quadrant, const boo
 	drawImage( gray, quadrant->se, lines );
 }
 
+QuadTree::node *QuadTree::subdivide( unsigned char **&gray, pair<unsigned, unsigned> topLeft, pair<unsigned, unsigned> bottomRight )
+{
+	node *quadrant = nullptr;
+	pair<unsigned, unsigned> nwtl = topLeft;
+	pair<unsigned, unsigned> nwbr = { bottomRight.first / 2, bottomRight.second / 2 };
+	pair<unsigned, unsigned> swtl = { topLeft.first, topLeft.second / 2 };
+	pair<unsigned, unsigned> swbr = { bottomRight.first / 2, bottomRight.second };
+	pair<unsigned, unsigned> netl = { topLeft.first / 2, bottomRight.second };
+	pair<unsigned, unsigned> nebr = { bottomRight.first, bottomRight.second / 2 };
+	pair<unsigned, unsigned> setl = { topLeft.first / 2, topLeft.second / 2 };
+	pair<unsigned, unsigned> sebr = bottomRight;
+
+	if( !needSubdivide( gray, evalSubdivision( gray, topLeft, bottomRight ), topLeft, bottomRight ) )
+	{
+		quadrant = new node( topLeft, bottomRight, evalSubdivision( gray, topLeft, bottomRight ) );
+		return quadrant;
+	}
+
+	quadrant = new node( topLeft, bottomRight, evalSubdivision( gray, topLeft, bottomRight ) );
+	quadrant->nw = subdivide( gray, nwtl, nwbr );
+	quadrant->sw = subdivide( gray, swtl, swbr );
+	quadrant->ne = subdivide( gray, netl, nebr );
+	quadrant->se = subdivide( gray, setl, sebr );
+	return quadrant;
+}
+
+/*
 void QuadTree::subdivide( unsigned char **&gray, node *quadrant )
 {
 	pair<unsigned, unsigned> nwtl = quadrant->topLeft;
@@ -82,6 +109,7 @@ void QuadTree::subdivide( unsigned char **&gray, node *quadrant )
 		nodeCount++;
 	}
 }
+*/
 
 bool QuadTree::needSubdivide( unsigned char **&gray, const unsigned char rep, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const
 {
