@@ -41,6 +41,6 @@ class QuadTree
 	void subdivide( unsigned char **&gray, node *quadrant );
 	bool needSubdivide( unsigned char **&gray, const unsigned char rep, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const;
 	unsigned evalSubdivision( unsigned char **&gray, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const;
-	unsigned char **buildImage( );
+	void drawImage( unsigned char **&gray, const node *quadrant, const bool lines ) const;
 };
 #endif

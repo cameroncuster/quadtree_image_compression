@@ -21,8 +21,24 @@ QuadTree::QuadTree( unsigned char **gray, const unsigned char tolerance, const u
 unsigned char **QuadTree::draw( const bool lines ) const
 {
 	unsigned char **gray = alloc2D_byte( root->bottomRight.first, root->bottomRight.second );
-	// build the image from the tree
+	drawImage( gray, root, lines );
 	return gray; // the image memory must be freed
+}
+
+void QuadTree::drawImage( unsigned char **&gray, const node *quadrant, const bool lines ) const
+{
+	unsigned i, j;
+	if( quadrant == nullptr )
+		return;
+
+	for( i = quadrant->topLeft.second; i < quadrant->bottomRight.second; i++ )
+		for( j = quadrant->topLeft.first; j < quadrant->bottomRight.first; j++ )
+			gray[i][j] = quadrant->pixelValue; // handle drawing the lines
+
+	drawImage( gray, quadrant->nw, lines );
+	drawImage( gray, quadrant->ne, lines );
+	drawImage( gray, quadrant->sw, lines );
+	drawImage( gray, quadrant->se, lines );
 }
 
 void QuadTree::subdivide( unsigned char **&gray, node *quadrant )
@@ -93,9 +109,4 @@ unsigned QuadTree::evalSubdivision( unsigned char **&gray, const pair<unsigned, 
 			sum += gray[i][j];
 	return sum / ( ( bottomRight.second - topLeft.second ) *
 			( bottomRight.first - topLeft.first ) );
-}
-
-unsigned char **QuadTree::buildImage( )
-{
-	return 0;
 }
