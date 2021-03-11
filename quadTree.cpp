@@ -18,6 +18,11 @@ QuadTree::QuadTree( unsigned char **gray, const unsigned char tolerance, const u
 	subdivide( gray, root );
 }
 
+QuadTree::~QuadTree( )
+{
+	clear( root );
+}
+
 unsigned char **QuadTree::draw( const bool lines ) const
 {
 	unsigned char **gray = alloc2D_byte( root->bottomRight.first, root->bottomRight.second );
@@ -55,7 +60,7 @@ void QuadTree::subdivide( unsigned char **&gray, node *quadrant )
 	if( needSubdivide( gray, quadrant->pixelValue, nwtl, nwbr ) )
 	{
 		quadrant->nw = new node( nwtl, nwbr, evalSubdivision( gray, nwtl, nwbr ) );
-		subdivide( gray, quadrant->nw );
+		subdivide( gray, quadrant->nw ); // stack blows and SEG faults
 		nodeCount++;
 	}
 	if( needSubdivide( gray, quadrant->pixelValue, swtl, swbr ) )
@@ -104,9 +109,25 @@ unsigned QuadTree::evalSubdivision( unsigned char **&gray, const pair<unsigned, 
 {
 	unsigned i, j;
 	unsigned sum = 0;
+	if( bottomRight.second - topLeft.second == 0 || bottomRight.first - topLeft.first == 0 )
+		return 0;
 	for( i = topLeft.second; i < bottomRight.second; i++ )
 		for( j = topLeft.first; j < bottomRight.first; j++ )
 			sum += gray[i][j];
 	return sum / ( ( bottomRight.second - topLeft.second ) *
 			( bottomRight.first - topLeft.first ) );
+}
+
+void QuadTree::clear( node *n )
+{
+	if( n == nullptr )
+	{
+		delete n;
+		return;
+	}
+
+	clear( n->nw );
+	clear( n->sw );
+	clear( n->ne );
+	clear( n->se );
 }

@@ -34,6 +34,7 @@ class QuadTree
 
 	public:
 	QuadTree( unsigned char **gray, const unsigned char tolerance, const unsigned width, const unsigned height );
+	~QuadTree( );
 
 	unsigned char **draw( const bool lines ) const;
 
@@ -42,5 +43,7 @@ class QuadTree
 	bool needSubdivide( unsigned char **&gray, const unsigned char rep, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const;
 	unsigned evalSubdivision( unsigned char **&gray, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const;
 	void drawImage( unsigned char **&gray, const node *quadrant, const bool lines ) const;
+
+	void clear( node *n );
 };
 #endif
