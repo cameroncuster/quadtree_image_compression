@@ -29,7 +29,7 @@ bool Application::OnUserCreate()
 {
    // convert RGBA Pixels into greyscale values.  0 = black ... 255 = white
    greyScale = convertToGreyscale((int **)image, width, height);
-   quadTree = new QuadTree( greyScale, ( unsigned char ) threshold, width, height );
+   quadTree = new QuadTree( greyScale, width, height, threshold );
    return true;
 }
 

@@ -4,16 +4,16 @@
 
 using namespace std;
 
-QuadTree::QuadTree( unsigned char **gray, const unsigned char tolerance, const unsigned width, const unsigned height )
+QuadTree::QuadTree( byte **gray, const unsigned width, const unsigned height, const byte thresh ) :
+	threshold( thresh ), pixelCount( width * height ), nodeCount( 0 )
 {
+	if( gray == nullptr || !width || !height )
+		throw;
 	pair<unsigned, unsigned> tl = { 0, 0 };
 	pair<unsigned, unsigned> br = { width - 1, height - 1 };
-	pixelCount = width * height;
-	nodeCount = 0;
 	leafNodeCount = 0;
 	byteCount = 0; // malloc but don't free and ask Valgrind how much I used...
 	compression = 0;
-	margin = tolerance;
 	root = new node( tl, br, evalSubdivision( gray, tl, br ) );
 	subdivide( gray, tl, br );
 }
@@ -23,14 +23,27 @@ QuadTree::~QuadTree( )
 	clear( root );
 }
 
-unsigned char **QuadTree::draw( const bool lines ) const
+void QuadTree::decreaseThreshold( )
 {
-	unsigned char **gray = alloc2D_byte( root->bottomRight.first + 1, root->bottomRight.second + 1 );
-	drawImage( gray, root, lines );
+}
+
+void QuadTree::increaseThreshold( )
+{
+}
+
+unsigned QuadTree::leafCount( ) const
+{
+	return leafNodeCount;
+}
+
+byte **QuadTree::getCompressedImage( ) const
+{
+	byte **gray = alloc2D_byte( root->bottomRight.first + 1, root->bottomRight.second + 1 );
+	buildCompressedImage( gray, root );
 	return gray; // the image memory must be freed
 }
 
-void QuadTree::drawImage( unsigned char **&gray, const node *quadrant, const bool lines ) const
+void QuadTree::buildCompressedImage( byte **&gray, const node *quadrant ) const
 {
 	unsigned i, j;
 	if( quadrant->nw == nullptr && quadrant->sw == nullptr &&
@@ -42,13 +55,13 @@ void QuadTree::drawImage( unsigned char **&gray, const node *quadrant, const boo
 		return;
 	}
 
-	drawImage( gray, quadrant->nw, lines );
-	drawImage( gray, quadrant->ne, lines );
-	drawImage( gray, quadrant->sw, lines );
-	drawImage( gray, quadrant->se, lines );
+	buildCompressedImage( gray, quadrant->nw );
+	buildCompressedImage( gray, quadrant->ne );
+	buildCompressedImage( gray, quadrant->sw );
+	buildCompressedImage( gray, quadrant->se );
 }
 
-QuadTree::node *QuadTree::subdivide( unsigned char **&gray, pair<unsigned, unsigned> topLeft, pair<unsigned, unsigned> bottomRight )
+QuadTree::node *QuadTree::subdivide( byte **&gray, pair<unsigned, unsigned> topLeft, pair<unsigned, unsigned> bottomRight )
 {
 	node *quadrant = nullptr;
 	pair<unsigned, unsigned> nwtl = topLeft;
@@ -75,7 +88,7 @@ QuadTree::node *QuadTree::subdivide( unsigned char **&gray, pair<unsigned, unsig
 }
 
 /*
-   void QuadTree::subdivide( unsigned char **&gray, node *quadrant )
+   void QuadTree::subdivide( byte **&gray, node *quadrant )
    {
    pair<unsigned, unsigned> nwtl = quadrant->topLeft;
    pair<unsigned, unsigned> nwbr = { quadrant->bottomRight.first / 2, quadrant->bottomRight.second / 2 };
@@ -113,11 +126,11 @@ QuadTree::node *QuadTree::subdivide( unsigned char **&gray, pair<unsigned, unsig
    }
  */
 
-bool QuadTree::needSubdivide( unsigned char **&gray, const unsigned char rep, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const
+bool QuadTree::needSubdivide( byte **&gray, const byte rep, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const
 {
 	unsigned i, j;
-	unsigned char mx = gray[ topLeft.second ][ topLeft.first ];
-	unsigned char mn = gray[ topLeft.second ][ topLeft.first ];
+	byte mx = gray[ topLeft.second ][ topLeft.first ];
+	byte mn = gray[ topLeft.second ][ topLeft.first ];
 	for( i = topLeft.second; i < bottomRight.second; i++ )
 	{
 		for( j = topLeft.first; j < bottomRight.first; j++ )
@@ -126,16 +139,16 @@ bool QuadTree::needSubdivide( unsigned char **&gray, const unsigned char rep, co
 				mx = gray[i][j];
 			if( gray[i][j] < mn )
 				mn = gray[i][j];
-			if( abs( rep - mx ) > margin )
+			if( abs( rep - mx ) > threshold )
 				return 0;
-			if( abs( rep - mn ) > margin )
+			if( abs( rep - mn ) > threshold )
 				return 0;
 		}
 	}
 	return 1;
 }
 
-unsigned QuadTree::evalSubdivision( unsigned char **&gray, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const
+unsigned QuadTree::evalSubdivision( byte **&gray, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const
 {
 	unsigned i, j;
 	unsigned sum = 0;

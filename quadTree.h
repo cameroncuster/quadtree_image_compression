@@ -5,20 +5,22 @@
 
 using namespace std;
 
+typedef unsigned char byte;
+
 class QuadTree
 {
-	unsigned char margin;
+	byte threshold;
 	struct node
 	{
 		pair<unsigned, unsigned> topLeft;
 		pair<unsigned, unsigned> bottomRight;
-		unsigned char pixelValue;
+		byte pixelValue;
 		node* nw;
 		node* sw;
 		node* ne;
 		node* se;
 
-		node( pair<unsigned, unsigned> tl, pair<unsigned, unsigned> br, unsigned char pixVal,
+		node( pair<unsigned, unsigned> tl, pair<unsigned, unsigned> br, byte pixVal,
 				node *northwest = nullptr, node *southwest = nullptr,
 				node *northeast = nullptr, node *southeast = nullptr ):
 			topLeft( tl ), bottomRight( br ), pixelValue( pixVal ),
@@ -33,17 +35,22 @@ class QuadTree
 	unsigned compression;
 
 	public:
-	QuadTree( unsigned char **gray, const unsigned char tolerance, const unsigned width, const unsigned height );
+	QuadTree( byte **gray, const unsigned width, const unsigned height, const byte thresh );
 	~QuadTree( );
 
-	unsigned char **draw( const bool lines ) const;
+	void decreaseThreshold( );
+	void increaseThreshold( );
+
+	unsigned leafCount( ) const;
+
+	byte **getCompressedImage( ) const;
 
 	private:
-	// void subdivide( unsigned char **&gray, node *quadrant );
-	node *subdivide( unsigned char **&gray, pair<unsigned, unsigned> topLeft, pair<unsigned, unsigned> bottomRight );
-	bool needSubdivide( unsigned char **&gray, const unsigned char rep, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const;
-	unsigned evalSubdivision( unsigned char **&gray, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const;
-	void drawImage( unsigned char **&gray, const node *quadrant, const bool lines ) const;
+	// void subdivide( byte **&gray, node *quadrant );
+	node *subdivide( byte **&gray, pair<unsigned, unsigned> topLeft, pair<unsigned, unsigned> bottomRight );
+	bool needSubdivide( byte **&gray, const byte rep, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const;
+	unsigned evalSubdivision( byte **&gray, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const;
+	void buildCompressedImage( byte **&gray, const node *quadrant ) const;
 
 	void clear( node *n );
 };
