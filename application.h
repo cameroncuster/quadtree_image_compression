@@ -2,6 +2,7 @@
 #define APPLICATION_H
 #include "olcPixelGameEngine.h"
 #include "readPNG.h"
+#include "quadTree.h"
 
 typedef unsigned char byte;
 
@@ -12,8 +13,10 @@ class Application : public olc::PixelGameEngine
    byte **greyScale;
    unsigned width, height;
    int threshold;
+   QuadTree *quadTree;
 public:
 	Application(const char *, int);
+	~Application( );
 
 public:
 	bool OnUserCreate() override;

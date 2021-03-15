@@ -11,7 +11,7 @@ olc::Pixel byteToGreyscalePixel(byte pixelByte)
 int Application::Width() const { return width ; }
 int Application::Height() const { return height ; }
 
-Application::Application(const char *filename, int thresh) : filename(filename), threshold(thresh)
+Application::Application(const char *filename, int thresh) : filename(filename), threshold(thresh), quadTree(nullptr)
 {
    sAppName = "Application";
    // read an RGBA PNG image from a file.  Need to read it here so we have the width
@@ -19,11 +19,17 @@ Application::Application(const char *filename, int thresh) : filename(filename),
    image = (olc::Pixel **)readPNG(filename, width, height);
 }
 
+Application::~Application( )
+{
+	//delete quadTree;
+}
+
 // Called once at the start, so create things here
 bool Application::OnUserCreate()
 {
    // convert RGBA Pixels into greyscale values.  0 = black ... 255 = white
    greyScale = convertToGreyscale((int **)image, width, height);
+   //quadTree = new QuadTree( greyScale, ( unsigned char ) threshold, width, height );
    return true;
 }
 
