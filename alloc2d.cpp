@@ -17,18 +17,18 @@ byte **alloc2D_byte(int nrows, int ncols)
    return bmp;
 }
 
-olc::Pixel** alloc2D( int nrows, int ncols )
+int** alloc2D( int nrows, int ncols )
 {
     // allocate a row of pointers
-    olc::Pixel** image = new olc::Pixel* [nrows];
+    int** image = new int* [nrows];
     if ( image == NULL ) return NULL;
 
     // allocate array elements
-    olc::Pixel* pixels = new olc::Pixel [ nrows * ncols ];
+    int* pixels = new int [ nrows * ncols ];
     if ( pixels == NULL ) { delete [] image; return NULL; }
 
     // zero out array elements
-    memset( pixels, 0, nrows * ncols * sizeof (olc::Pixel) );
+    memset( pixels, 0, nrows * ncols * sizeof (int) );
 
     // point the row pointers at each row of the 2-D array
     for ( int row = 0; row < nrows; ++row, pixels += ncols )
@@ -39,7 +39,7 @@ olc::Pixel** alloc2D( int nrows, int ncols )
 }
 
 // deallocate 2-D array
-void free2D( olc::Pixel** image )
+void free2D( int** image )
 {
     if ( image )
     {

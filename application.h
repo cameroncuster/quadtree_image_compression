@@ -12,17 +12,16 @@ class Application : public olc::PixelGameEngine
    byte **greyScale;
    unsigned width, height;
    int threshold;
+public:
+	Application(const char *, int);
 
 public:
-   Application(const char *, int);
+	bool OnUserCreate() override;
+	bool OnUserUpdate(float) override;
+    bool OnUserDestroy() override;
 
-public:
-   bool OnUserCreate() override;
-   bool OnUserUpdate(float) override;
-   bool OnUserDestroy() override;
-
-   int Width() const;
-   int Height() const;
+    int Width() const;
+    int Height() const;
 };
 
 #endif

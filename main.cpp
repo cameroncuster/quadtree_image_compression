@@ -24,7 +24,6 @@ bool checkParameters(int argc, char **argv, int &threshold)
    try
    {
       threshold = stoi(argv[2]);
-      if (threshold < 1) threshold = 15;
    }
    catch (...)
    {
