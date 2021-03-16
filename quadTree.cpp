@@ -2,6 +2,8 @@
 #include "alloc2d.h"
 #include <cmath>
 
+#include <iostream>
+
 using namespace std;
 
 QuadTree::QuadTree( byte **gray, const unsigned width, const unsigned height, const byte thresh ) :
@@ -51,7 +53,7 @@ void QuadTree::buildCompressedImage( byte **&gray, const node *quadrant ) const
 	{
 		for( i = quadrant->topLeft.second; i < quadrant->bottomRight.second; i++ )
 			for( j = quadrant->topLeft.first; j < quadrant->bottomRight.first; j++ )
-				gray[i][j] = quadrant->pixelValue; // handle drawing the lines
+				gray[i][j] = quadrant->pixelValue;
 		return;
 	}
 
@@ -66,11 +68,11 @@ QuadTree::node *QuadTree::subdivide( byte **&gray, pair<unsigned, unsigned> topL
 	node *quadrant = nullptr;
 	pair<unsigned, unsigned> nwtl = topLeft;
 	pair<unsigned, unsigned> nwbr = { bottomRight.first / 2, bottomRight.second / 2 };
-	pair<unsigned, unsigned> swtl = { topLeft.first, topLeft.second / 2 };
+	pair<unsigned, unsigned> swtl = { topLeft.first, topLeft.second + ( bottomRight.second - topLeft.second ) / 2 };
 	pair<unsigned, unsigned> swbr = { bottomRight.first / 2, bottomRight.second };
-	pair<unsigned, unsigned> netl = { topLeft.first / 2, bottomRight.second };
+	pair<unsigned, unsigned> netl = { topLeft.first + ( bottomRight.first - topLeft.first ) / 2, bottomRight.second };
 	pair<unsigned, unsigned> nebr = { bottomRight.first, bottomRight.second / 2 };
-	pair<unsigned, unsigned> setl = { topLeft.first / 2, topLeft.second / 2 };
+	pair<unsigned, unsigned> setl = { topLeft.first + ( bottomRight.first - topLeft.first ) / 2, topLeft.second + ( bottomRight.second - topLeft.second ) / 2 };
 	pair<unsigned, unsigned> sebr = bottomRight;
 
 	if( !needSubdivide( gray, evalSubdivision( gray, topLeft, bottomRight ), topLeft, bottomRight ) )
@@ -87,52 +89,12 @@ QuadTree::node *QuadTree::subdivide( byte **&gray, pair<unsigned, unsigned> topL
 	return quadrant;
 }
 
-/*
-   void QuadTree::subdivide( byte **&gray, node *quadrant )
-   {
-   pair<unsigned, unsigned> nwtl = quadrant->topLeft;
-   pair<unsigned, unsigned> nwbr = { quadrant->bottomRight.first / 2, quadrant->bottomRight.second / 2 };
-   pair<unsigned, unsigned> swtl = { quadrant->topLeft.first, quadrant->topLeft.second / 2 };
-   pair<unsigned, unsigned> swbr = { quadrant->bottomRight.first / 2, quadrant->bottomRight.second };
-   pair<unsigned, unsigned> netl = { quadrant->topLeft.first / 2, quadrant->bottomRight.second };
-   pair<unsigned, unsigned> nebr = { quadrant->bottomRight.first, quadrant->bottomRight.second / 2 };
-   pair<unsigned, unsigned> setl = { quadrant->topLeft.first / 2, quadrant->topLeft.second / 2 };
-   pair<unsigned, unsigned> sebr = quadrant->bottomRight;
-
-   if( needSubdivide( gray, quadrant->pixelValue, nwtl, nwbr ) )
-   {
-   quadrant->nw = new node( nwtl, nwbr, evalSubdivision( gray, nwtl, nwbr ) );
-   subdivide( gray, quadrant->nw ); // stack blows and SEG faults
-   nodeCount++;
-   }
-   if( needSubdivide( gray, quadrant->pixelValue, swtl, swbr ) )
-   {
-   quadrant->sw = new node( swtl, swbr, evalSubdivision( gray, swtl, swbr ) );
-   subdivide( gray, quadrant->sw );
-   nodeCount++;
-   }
-   if( needSubdivide( gray, quadrant->pixelValue, netl, nebr ) )
-   {
-   quadrant->ne = new node( netl, nebr, evalSubdivision( gray, netl, nebr ) );
-   subdivide( gray, quadrant->ne );
-   nodeCount++;
-   }
-   if( needSubdivide( gray, quadrant->pixelValue, setl, sebr ) )
-   {
-   quadrant->se = new node( setl, sebr, evalSubdivision( gray, setl, sebr ) );
-   subdivide( gray, quadrant->se );
-   nodeCount++;
-   }
-   }
- */
-
 bool QuadTree::needSubdivide( byte **&gray, const byte rep, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const
 {
 	unsigned i, j;
 	byte mx = gray[ topLeft.second ][ topLeft.first ];
 	byte mn = gray[ topLeft.second ][ topLeft.first ];
 	for( i = topLeft.second; i < bottomRight.second; i++ )
-	{
 		for( j = topLeft.first; j < bottomRight.first; j++ )
 		{
 			if( gray[i][j] > mx )
@@ -140,12 +102,11 @@ bool QuadTree::needSubdivide( byte **&gray, const byte rep, const pair<unsigned,
 			if( gray[i][j] < mn )
 				mn = gray[i][j];
 			if( abs( rep - mx ) > threshold )
-				return 0;
+				return 1;
 			if( abs( rep - mn ) > threshold )
-				return 0;
+				return 1;
 		}
-	}
-	return 1;
+	return 0;
 }
 
 unsigned QuadTree::evalSubdivision( byte **&gray, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const

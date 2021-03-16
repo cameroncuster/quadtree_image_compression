@@ -46,7 +46,6 @@ class QuadTree
 	byte **getCompressedImage( ) const;
 
 	private:
-	// void subdivide( byte **&gray, node *quadrant );
 	node *subdivide( byte **&gray, pair<unsigned, unsigned> topLeft, pair<unsigned, unsigned> bottomRight );
 	bool needSubdivide( byte **&gray, const byte rep, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const;
 	unsigned evalSubdivision( byte **&gray, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const;
