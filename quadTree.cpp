@@ -1,7 +1,6 @@
 #include "quadTree.h"
 #include "alloc2d.h"
 #include <cmath>
-
 #include <iostream>
 
 using namespace std;
