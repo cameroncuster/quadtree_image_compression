@@ -16,8 +16,7 @@ QuadTree::QuadTree( byte **gray, const unsigned width, const unsigned height, co
 	leafNodeCount = 0;
 	byteCount = 0; // malloc but don't free and ask Valgrind how much I used...
 	compression = 0;
-	root = new node( tl, br, evalSubdivision( gray, tl, br ) );
-	subdivide( gray, tl, br );
+	root = subdivide( gray, tl, br );
 }
 
 QuadTree::~QuadTree( )
@@ -65,7 +64,7 @@ void QuadTree::buildCompressedImage( byte **&gray, const node *quadrant ) const
 
 QuadTree::node *QuadTree::subdivide( byte **&gray, pair<unsigned, unsigned> topLeft, pair<unsigned, unsigned> bottomRight )
 {
-	node *quadrant = nullptr;
+	node *quadrant = new node( topLeft, bottomRight, evalSubdivision( gray, topLeft, bottomRight ) );
 	pair<unsigned, unsigned> center = { topLeft.first + ( bottomRight.first - topLeft.first ) / 2, topLeft.second + ( bottomRight.second - topLeft.second ) / 2 };
 	pair<unsigned, unsigned> nwtl = topLeft;
 	pair<unsigned, unsigned> nwbr = center;
@@ -76,14 +75,11 @@ QuadTree::node *QuadTree::subdivide( byte **&gray, pair<unsigned, unsigned> topL
 	pair<unsigned, unsigned> setl = center;
 	pair<unsigned, unsigned> sebr = bottomRight;
 
+
 	if( !needSubdivide( gray, evalSubdivision( gray, topLeft, bottomRight ), topLeft, bottomRight ) ||
 			topLeft.first - bottomRight.first < 2 || topLeft.second - bottomRight.second < 2 )
-	{
-		quadrant = new node( topLeft, bottomRight, evalSubdivision( gray, topLeft, bottomRight ) );
 		return quadrant;
-	}
 
-	quadrant = new node( topLeft, bottomRight, evalSubdivision( gray, topLeft, bottomRight ) );
 	quadrant->nw = subdivide( gray, nwtl, nwbr );
 	quadrant->sw = subdivide( gray, swtl, swbr );
 	quadrant->ne = subdivide( gray, netl, nebr );
