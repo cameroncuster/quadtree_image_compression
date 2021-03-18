@@ -43,7 +43,7 @@ class QuadTree
 
 	unsigned leafCount( ) const;
 
-	byte **getCompressedImage( ) const;
+	void getCompressedImage( byte **&gray ) const;
 
 	private:
 	node *subdivide( byte **&gray, pair<unsigned, unsigned> topLeft, pair<unsigned, unsigned> bottomRight );

@@ -37,11 +37,9 @@ unsigned QuadTree::leafCount( ) const
 	return leafNodeCount;
 }
 
-byte **QuadTree::getCompressedImage( ) const
+void QuadTree::getCompressedImage( byte **&gray ) const
 {
-	byte **gray = alloc2D_byte( root->bottomRight.first + 1, root->bottomRight.second + 1 );
 	buildCompressedImage( gray, root );
-	return gray; // the image memory must be freed
 }
 
 void QuadTree::buildCompressedImage( byte **&gray, const node *quadrant ) const
@@ -111,8 +109,6 @@ unsigned QuadTree::evalSubdivision( byte **&gray, const pair<unsigned, unsigned>
 {
 	unsigned i, j;
 	unsigned sum = 0;
-	if( bottomRight.second - topLeft.second == 0 || bottomRight.first - topLeft.first == 0 )
-		return 0;
 	for( i = topLeft.second; i < bottomRight.second; i++ )
 		for( j = topLeft.first; j < bottomRight.first; j++ )
 			sum += gray[i][j];

@@ -44,7 +44,7 @@ bool Application::OnUserUpdate(float fElapsedTime)
          // output the original image on the left
          Draw(x, y, image[y][x]);
 		 // set the greyscale image to the quadTree compressed image
-		 compressed = quadTree->getCompressedImage( );
+		 quadTree->getCompressedImage( compressed );
          // output the compressed greyscale image on the right
          Draw(x + width, y, byteToGreyscalePixel(compressed[y][x]));
       }
