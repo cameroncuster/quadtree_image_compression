@@ -57,27 +57,27 @@ void QuadTree::buildCompressedImage( byte **&gray, const node *quadrant ) const
 		return;
 	}
 
-	/*
 	buildCompressedImage( gray, quadrant->nw );
 	buildCompressedImage( gray, quadrant->ne );
 	buildCompressedImage( gray, quadrant->sw );
 	buildCompressedImage( gray, quadrant->se );
-	*/
 }
 
 QuadTree::node *QuadTree::subdivide( byte **&gray, pair<unsigned, unsigned> topLeft, pair<unsigned, unsigned> bottomRight )
 {
 	node *quadrant = nullptr;
+	pair<unsigned, unsigned> center = { topLeft.first + ( bottomRight.first - topLeft.first ) / 2, topLeft.second + ( bottomRight.second - topLeft.second ) / 2 };
 	pair<unsigned, unsigned> nwtl = topLeft;
-	pair<unsigned, unsigned> nwbr = { bottomRight.first / 2, bottomRight.second / 2 };
-	pair<unsigned, unsigned> swtl = { topLeft.first, topLeft.second + ( bottomRight.second - topLeft.second ) / 2 };
-	pair<unsigned, unsigned> swbr = { bottomRight.first / 2, bottomRight.second };
-	pair<unsigned, unsigned> netl = { topLeft.first + ( bottomRight.first - topLeft.first ) / 2, bottomRight.second };
-	pair<unsigned, unsigned> nebr = { bottomRight.first, bottomRight.second / 2 };
-	pair<unsigned, unsigned> setl = { topLeft.first + ( bottomRight.first - topLeft.first ) / 2, topLeft.second + ( bottomRight.second - topLeft.second ) / 2 };
+	pair<unsigned, unsigned> nwbr = center;
+	pair<unsigned, unsigned> swtl = { topLeft.first, center.second };
+	pair<unsigned, unsigned> swbr = { center.first, bottomRight.second };
+	pair<unsigned, unsigned> netl = { center.first, topLeft.second };
+	pair<unsigned, unsigned> nebr = { bottomRight.first, center.second };
+	pair<unsigned, unsigned> setl = center;
 	pair<unsigned, unsigned> sebr = bottomRight;
 
-	if( !needSubdivide( gray, evalSubdivision( gray, topLeft, bottomRight ), topLeft, bottomRight ) )
+	if( !needSubdivide( gray, evalSubdivision( gray, topLeft, bottomRight ), topLeft, bottomRight ) ||
+			topLeft.first - bottomRight.first < 2 || topLeft.second - bottomRight.second < 2 )
 	{
 		quadrant = new node( topLeft, bottomRight, evalSubdivision( gray, topLeft, bottomRight ) );
 		return quadrant;
