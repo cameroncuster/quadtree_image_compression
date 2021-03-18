@@ -61,20 +61,20 @@ void QuadTree::addLines( byte **&gray, const node *quadrant ) const // rapid pro
 
 	for( i = quadrant->topLeft.second; i < quadrant->bottomRight.second; i++ )
 	{
-		gray[ quadrant->topLeft.first ][i] = 255;
-		gray[ quadrant->bottomRight.first ][i] = 255;
+		gray[i][ quadrant->topLeft.first ] = 255;
+		gray[i][ quadrant->bottomRight.first ] = 255;
 	}
 
 	for( i = quadrant->topLeft.first; i < quadrant->bottomRight.first; i++ )
 	{
-		gray[i][ quadrant->topLeft.second ] = 255;
-		gray[i][ quadrant->bottomRight.second ] = 255;
+		gray[ quadrant->topLeft.second ][i] = 255;
+		gray[ quadrant->bottomRight.second ][i] = 255;
 	}
 
-	buildCompressedImage( gray, quadrant->nw );
-	buildCompressedImage( gray, quadrant->ne );
-	buildCompressedImage( gray, quadrant->sw );
-	buildCompressedImage( gray, quadrant->se );
+	addLines( gray, quadrant->nw );
+	addLines( gray, quadrant->ne );
+	addLines( gray, quadrant->sw );
+	addLines( gray, quadrant->se );
 }
 
 unsigned QuadTree::leafCount( ) const
@@ -141,10 +141,14 @@ bool QuadTree::needSubdivide( byte **&gray, const byte rep, const pair<unsigned,
 				mx = gray[i][j];
 			if( gray[i][j] < mn )
 				mn = gray[i][j];
+			if( mx - mn > threshold )
+				return 1;
+			/*
 			if( abs( rep - mx ) > threshold )
 				return 1;
 			if( abs( rep - mn ) > threshold )
 				return 1;
+				*/
 		}
 	return 0;
 }
