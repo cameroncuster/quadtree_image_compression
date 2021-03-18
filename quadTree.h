@@ -35,21 +35,24 @@ class QuadTree
 	unsigned compression;
 
 	public:
-	QuadTree( byte **gray, const unsigned width, const unsigned height, const byte thresh );
+	QuadTree( byte **&gray, const unsigned width, const unsigned height, const byte thresh );
 	~QuadTree( );
 
-	void decreaseThreshold( );
-	void increaseThreshold( );
+	void decreaseThreshold( byte **&gray, const unsigned width, const unsigned height ); // optomized for rapid protoyping must be an delete routine
+	void increaseThreshold( byte **&gray, const unsigned width, const unsigned height ); // optomized for rapid protoyping must be an delete routine
 
 	unsigned leafCount( ) const;
 
 	void getCompressedImage( byte **&gray ) const;
+
+	void drawLines( byte **&gray ) const;
 
 	private:
 	node *subdivide( byte **&gray, pair<unsigned, unsigned> topLeft, pair<unsigned, unsigned> bottomRight );
 	bool needSubdivide( byte **&gray, const byte rep, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const;
 	unsigned evalSubdivision( byte **&gray, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const;
 	void buildCompressedImage( byte **&gray, const node *quadrant ) const;
+	void addLines( byte **&gray, const node *quadrant ) const;
 
 	void clear( node *n );
 };

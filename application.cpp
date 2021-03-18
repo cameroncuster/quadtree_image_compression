@@ -11,7 +11,7 @@ olc::Pixel byteToGreyscalePixel(byte pixelByte)
 int Application::Width() const { return width ; }
 int Application::Height() const { return height ; }
 
-Application::Application(const char *filename, int thresh) : filename(filename), threshold(thresh)
+Application::Application(const char *filename, int thresh) : filename(filename), threshold(thresh), lines(0)
 {
 	sAppName = "Application";
 	// read an RGBA PNG image from a file.  Need to read it here so we have the width
@@ -37,8 +37,20 @@ bool Application::OnUserCreate()
 // This member function is called repeatedly until the program exits.
 bool Application::OnUserUpdate(float fElapsedTime)
 {
+	// rapid protoyping
+	if( GetKey( olc::Key::SPACE ).bPressed )
+		lines = !lines;
+	if( GetKey( olc::Key::UP ).bPressed )
+		quadTree->increaseThreshold( greyScale, width, height );
+	if( GetKey( olc::Key::DOWN ).bPressed )
+		quadTree->decreaseThreshold( greyScale, width, height );
+
 	// set the compressed image to the quadTree compressed image
 	quadTree->getCompressedImage( compressed );
+
+	if( lines )
+		quadTree->drawLines( compressed );
+
 	// This draws the QR image into the window.
 	for (int y = 0; y < ScreenHeight(); y++)
 		for (int x = 0; x < ScreenWidth() / 2; x++)

@@ -15,6 +15,7 @@ class Application : public olc::PixelGameEngine
    unsigned width, height;
    int threshold;
    QuadTree *quadTree;
+   bool lines;
 public:
 	Application(const char *, int);
 	~Application( );

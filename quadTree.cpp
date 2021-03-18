@@ -6,7 +6,7 @@
 
 using namespace std;
 
-QuadTree::QuadTree( byte **gray, const unsigned width, const unsigned height, const byte thresh ) :
+QuadTree::QuadTree( byte **&gray, const unsigned width, const unsigned height, const byte thresh ) :
 	threshold( thresh ), pixelCount( width * height ), nodeCount( 0 )
 {
 	if( gray == nullptr || !width || !height )
@@ -22,14 +22,59 @@ QuadTree::QuadTree( byte **gray, const unsigned width, const unsigned height, co
 QuadTree::~QuadTree( )
 {
 	clear( root );
+	delete root;
 }
 
-void QuadTree::decreaseThreshold( )
+void QuadTree::decreaseThreshold( byte **&gray, const unsigned width, const unsigned height ) // optomized for rapid protoyping must be an delete routine
 {
+	pair<unsigned, unsigned> tl = { 0, 0 };
+	pair<unsigned, unsigned> br = { width - 1, height - 1 };
+	if( threshold == 255 )
+		return;
+	threshold++;
+	clear( root );
+	root = subdivide( gray, tl, br );
 }
 
-void QuadTree::increaseThreshold( )
+void QuadTree::increaseThreshold( byte **&gray, const unsigned width, const unsigned height ) // optomized for rapid protoyping must be an delete routine
 {
+	pair<unsigned, unsigned> tl = { 0, 0 };
+	pair<unsigned, unsigned> br = { width - 1, height - 1 };
+	if( !threshold )
+		return;
+	threshold--;
+	clear( root );
+	root = subdivide( gray, tl, br );
+}
+
+void QuadTree::drawLines( byte **&gray ) const
+{
+	addLines( gray, root );
+}
+
+void QuadTree::addLines( byte **&gray, const node *quadrant ) const // rapid protoyping: lines could be stored externally from the quadTree node structure
+{
+	unsigned i;
+	if( quadrant->nw == nullptr && quadrant->sw == nullptr &&
+			quadrant->ne == nullptr && quadrant->se == nullptr ) // less operations than overwriting every recursive call
+		return;
+
+	for( i = quadrant->topLeft.second; i < quadrant->bottomRight.second; i++ )
+	{
+		gray[ quadrant->topLeft.first ][i] = 255;
+		gray[ quadrant->bottomRight.first ][i] = 255;
+	}
+
+	for( i = quadrant->topLeft.first; i < quadrant->bottomRight.first; i++ )
+	{
+		gray[i][ quadrant->topLeft.second ] = 255;
+		gray[i][ quadrant->bottomRight.second ] = 255;
+	}
+
+	buildCompressedImage( gray, quadrant->nw );
+	buildCompressedImage( gray, quadrant->ne );
+	buildCompressedImage( gray, quadrant->sw );
+	buildCompressedImage( gray, quadrant->se );
 }
 
 unsigned QuadTree::leafCount( ) const
@@ -72,7 +117,6 @@ QuadTree::node *QuadTree::subdivide( byte **&gray, pair<unsigned, unsigned> topL
 	pair<unsigned, unsigned> nebr = { bottomRight.first, center.second };
 	pair<unsigned, unsigned> setl = center;
 	pair<unsigned, unsigned> sebr = bottomRight;
-
 
 	if( !needSubdivide( gray, evalSubdivision( gray, topLeft, bottomRight ), topLeft, bottomRight ) ||
 			topLeft.first - bottomRight.first < 2 || topLeft.second - bottomRight.second < 2 )
