@@ -109,6 +109,8 @@ unsigned QuadTree::evalSubdivision( byte **&gray, const pair<unsigned, unsigned>
 {
 	unsigned i, j;
 	unsigned sum = 0;
+	if( bottomRight.second - topLeft.second == 0 || bottomRight.first - topLeft.first == 0 )
+		return 0;
 	for( i = topLeft.second; i < bottomRight.second; i++ )
 		for( j = topLeft.first; j < bottomRight.first; j++ )
 			sum += gray[i][j];
