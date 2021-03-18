@@ -57,10 +57,12 @@ void QuadTree::buildCompressedImage( byte **&gray, const node *quadrant ) const
 		return;
 	}
 
+	/*
 	buildCompressedImage( gray, quadrant->nw );
 	buildCompressedImage( gray, quadrant->ne );
 	buildCompressedImage( gray, quadrant->sw );
 	buildCompressedImage( gray, quadrant->se );
+	*/
 }
 
 QuadTree::node *QuadTree::subdivide( byte **&gray, pair<unsigned, unsigned> topLeft, pair<unsigned, unsigned> bottomRight )

@@ -29,6 +29,7 @@ bool Application::OnUserCreate()
 {
    // convert RGBA Pixels into greyscale values.  0 = black ... 255 = white
    greyScale = convertToGreyscale((int **)image, width, height);
+   compressed = convertToGreyscale((int **)image, width, height);
    quadTree = new QuadTree( greyScale, width, height, threshold );
    return true;
 }
@@ -43,9 +44,9 @@ bool Application::OnUserUpdate(float fElapsedTime)
          // output the original image on the left
          Draw(x, y, image[y][x]);
 		 // set the greyscale image to the quadTree compressed image
-		 greyScale = quadTree->getCompressedImage( );
-         // output the greyscale image on the right
-         Draw(x + width, y, byteToGreyscalePixel(greyScale[y][x]));
+		 compressed = quadTree->getCompressedImage( );
+         // output the compressed greyscale image on the right
+         Draw(x + width, y, byteToGreyscalePixel(compressed[y][x]));
       }
 
    // If the escape or 'q' key is pressed, exit

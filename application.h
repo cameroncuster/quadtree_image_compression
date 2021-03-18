@@ -11,6 +11,7 @@ class Application : public olc::PixelGameEngine
    const char *filename;
    olc::Pixel **image;
    byte **greyScale;
+   byte **compressed;
    unsigned width, height;
    int threshold;
    QuadTree *quadTree;
