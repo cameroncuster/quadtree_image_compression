@@ -12,7 +12,7 @@ QuadTree::QuadTree( byte **&gray, const unsigned width, const unsigned height, c
 	if( gray == nullptr || !width || !height )
 		throw;
 	pair<unsigned, unsigned> tl = { 0, 0 };
-	pair<unsigned, unsigned> br = { width - 1, height - 1 };
+	pair<unsigned, unsigned> br = { width, height };
 	leafNodeCount = 0;
 	byteCount = 0; // malloc but don't free and ask Valgrind how much I used...
 	compression = 0;
@@ -28,7 +28,7 @@ QuadTree::~QuadTree( )
 void QuadTree::decreaseThreshold( byte **&gray, const unsigned width, const unsigned height ) // optomized for rapid protoyping must be an delete routine
 {
 	pair<unsigned, unsigned> tl = { 0, 0 };
-	pair<unsigned, unsigned> br = { width - 1, height - 1 };
+	pair<unsigned, unsigned> br = { width, height };
 	if( threshold == 255 )
 		return;
 	threshold++;
@@ -39,7 +39,7 @@ void QuadTree::decreaseThreshold( byte **&gray, const unsigned width, const unsi
 void QuadTree::increaseThreshold( byte **&gray, const unsigned width, const unsigned height ) // optomized for rapid protoyping must be an delete routine
 {
 	pair<unsigned, unsigned> tl = { 0, 0 };
-	pair<unsigned, unsigned> br = { width - 1, height - 1 };
+	pair<unsigned, unsigned> br = { width, height };
 	if( !threshold )
 		return;
 	threshold--;
@@ -62,13 +62,13 @@ void QuadTree::addLines( byte **&gray, const node *quadrant ) const // rapid pro
 	for( i = quadrant->topLeft.second; i < quadrant->bottomRight.second; i++ )
 	{
 		gray[i][ quadrant->topLeft.first ] = 255;
-		gray[i][ quadrant->bottomRight.first ] = 255;
+		gray[i][ quadrant->bottomRight.first - 1 ] = 255;
 	}
 
 	for( i = quadrant->topLeft.first; i < quadrant->bottomRight.first; i++ )
 	{
 		gray[ quadrant->topLeft.second ][i] = 255;
-		gray[ quadrant->bottomRight.second ][i] = 255;
+		gray[ quadrant->bottomRight.second - 1 ][i] = 255;
 	}
 
 	addLines( gray, quadrant->nw );
