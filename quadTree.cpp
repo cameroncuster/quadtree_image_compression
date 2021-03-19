@@ -54,9 +54,6 @@ void QuadTree::drawLines( byte **&gray ) const
 void QuadTree::addLines( byte **&gray, const node *quadrant ) const // rapid protoyping: lines could be stored externally from the quadTree node structure
 {
 	unsigned i;
-	if( quadrant->nw == nullptr && quadrant->sw == nullptr &&
-			quadrant->ne == nullptr && quadrant->se == nullptr ) // less operations than overwriting every recursive call
-		return;
 
 	for( i = quadrant->topLeft.second; i < quadrant->bottomRight.second; i++ )
 	{
@@ -69,6 +66,10 @@ void QuadTree::addLines( byte **&gray, const node *quadrant ) const // rapid pro
 		gray[ quadrant->topLeft.second ][i] = 255;
 		gray[ quadrant->bottomRight.second - 1 ][i] = 255;
 	}
+
+	if( quadrant->nw == nullptr && quadrant->sw == nullptr &&
+			quadrant->ne == nullptr && quadrant->se == nullptr ) // less operations than overwriting every recursive call
+		return;
 
 	addLines( gray, quadrant->nw );
 	addLines( gray, quadrant->ne );
