@@ -55,6 +55,9 @@ void QuadTree::addLines( byte **&gray, const node *quadrant ) const // rapid pro
 {
 	unsigned i;
 
+	if( quadrant == nullptr )
+		return;
+
 	for( i = quadrant->topLeft.second; i < quadrant->bottomRight.second; i++ )
 	{
 		gray[i][ quadrant->topLeft.first ] = 255;
@@ -66,10 +69,6 @@ void QuadTree::addLines( byte **&gray, const node *quadrant ) const // rapid pro
 		gray[ quadrant->topLeft.second ][i] = 255;
 		gray[ quadrant->bottomRight.second - 1 ][i] = 255;
 	}
-
-	if( quadrant->nw == nullptr && quadrant->sw == nullptr &&
-			quadrant->ne == nullptr && quadrant->se == nullptr ) // less operations than overwriting every recursive call
-		return;
 
 	addLines( gray, quadrant->nw );
 	addLines( gray, quadrant->ne );
@@ -143,12 +142,10 @@ bool QuadTree::needSubdivide( byte **&gray, const byte rep, const pair<unsigned,
 				mn = gray[i][j];
 			if( mx - mn > threshold )
 				return 1;
-			/*
 			if( abs( rep - mx ) > threshold )
 				return 1;
 			if( abs( rep - mn ) > threshold )
 				return 1;
-				*/
 		}
 	return 0;
 }
