@@ -7,6 +7,10 @@ using namespace std;
 
 typedef unsigned char byte;
 
+// TODO
+// Implement threshold increment and decrement as floating point
+// Speed up increment and decrement with insert and delete
+// Document Code
 class QuadTree
 {
 	byte threshold;
@@ -36,11 +40,14 @@ class QuadTree
 	unsigned uncompressedSize;
 
 	public:
-	QuadTree( byte **&gray, const unsigned width, const unsigned height, const byte thresh );
+	QuadTree( byte **&gray, const unsigned width, const unsigned height,
+			const byte thresh );
 	~QuadTree( );
 
-	void decreaseThreshold( byte **&gray, const unsigned width, const unsigned height ); // optomized for rapid protoyping must be an delete routine
-	void increaseThreshold( byte **&gray, const unsigned width, const unsigned height ); // optomized for rapid protoyping must be an delete routine
+	void decreaseThreshold( byte **&gray, const unsigned width,
+			const unsigned height ); // optomized for rapid protoyping must be an delete routine
+	void increaseThreshold( byte **&gray, const unsigned width,
+			const unsigned height ); // optomized for rapid protoyping must be an delete routine
 
 	unsigned leafCount( ) const;
 
@@ -48,12 +55,17 @@ class QuadTree
 
 	void drawLines( byte **&gray ) const;
 
-	void printData();
+	void printData( ) const;
 
 	private:
-	node *subdivide( byte **&gray, pair<unsigned, unsigned> topLeft, pair<unsigned, unsigned> bottomRight );
-	bool needSubdivide( byte **&gray, const byte rep, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const;
-	unsigned evalSubdivision( byte **&gray, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const;
+	node *subdivide( byte **&gray, pair<unsigned, unsigned> topLeft,
+			pair<unsigned, unsigned> bottomRight );
+	bool needSubdivide( byte **&gray, const byte rep,
+			const pair<unsigned, unsigned> topLeft,
+			const pair<unsigned, unsigned> bottomRight ) const;
+	unsigned evalSubdivision( byte **&gray,
+			const pair<unsigned, unsigned> topLeft,
+			const pair<unsigned, unsigned> bottomRight ) const;
 	void buildCompressedImage( byte **&gray, const node *quadrant ) const;
 	void addLines( byte **&gray, const node *quadrant ) const;
 

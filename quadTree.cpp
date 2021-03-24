@@ -5,7 +5,11 @@
 
 using namespace std;
 
-QuadTree::QuadTree( byte **&gray, const unsigned width, const unsigned height, const byte thresh ) :
+////////////////////////////////////////////////////////////////////////////////
+///			Construct a new QuadTree given an image and a threshold			 ///
+////////////////////////////////////////////////////////////////////////////////
+QuadTree::QuadTree( byte **&gray, const unsigned width, const unsigned height,
+		const byte thresh ) :
 	threshold( thresh ), pixelCount( width * height ), nodeCount( 0 )
 {
 	if( gray == nullptr || !width || !height )
@@ -27,7 +31,11 @@ QuadTree::~QuadTree( )
 	delete root;
 }
 
-void QuadTree::decreaseThreshold( byte **&gray, const unsigned width, const unsigned height ) // optomized for rapid protoyping must be an delete routine
+////////////////////////////////////////////////////////////////////////////////
+///		   insert nodes as necessary to maintain the tighter threshold		 ///
+////////////////////////////////////////////////////////////////////////////////
+void QuadTree::decreaseThreshold( byte **&gray, const unsigned width,
+		const unsigned height ) // optomized for rapid protoyping must be an delete routine
 {
 	leafNodeCount = 0;
 	byteCount = 0;
@@ -42,7 +50,11 @@ void QuadTree::decreaseThreshold( byte **&gray, const unsigned width, const unsi
 	printData();
 }
 
-void QuadTree::increaseThreshold( byte **&gray, const unsigned width, const unsigned height ) // optomized for rapid protoyping must be an delete routine
+////////////////////////////////////////////////////////////////////////////////
+///		   delete nodes while possible to maintain the looser threshold		 ///
+////////////////////////////////////////////////////////////////////////////////
+void QuadTree::increaseThreshold( byte **&gray, const unsigned width,
+		const unsigned height ) // optomized for rapid protoyping must be an delete routine
 {
 	leafNodeCount = 0;
 	byteCount = 0;
@@ -57,11 +69,17 @@ void QuadTree::increaseThreshold( byte **&gray, const unsigned width, const unsi
 	printData();
 }
 
+////////////////////////////////////////////////////////////////////////////////
+///						draw every line in the QuadTree						 ///
+////////////////////////////////////////////////////////////////////////////////
 void QuadTree::drawLines( byte **&gray ) const
 {
 	addLines( gray, root );
 }
 
+////////////////////////////////////////////////////////////////////////////////
+///		draw the lines as directed by the dimenstions stored in each node	 ///
+////////////////////////////////////////////////////////////////////////////////
 void QuadTree::addLines( byte **&gray, const node *quadrant ) const // rapid protoyping: lines could be stored externally from the quadTree node structure
 {
 	unsigned i;
@@ -87,16 +105,17 @@ void QuadTree::addLines( byte **&gray, const node *quadrant ) const // rapid pro
 	addLines( gray, quadrant->se );
 }
 
-unsigned QuadTree::leafCount( ) const
-{
-	return leafNodeCount;
-}
-
+////////////////////////////////////////////////////////////////////////////////
+///			return the compressed image constructed from the QuadTree		 ///
+////////////////////////////////////////////////////////////////////////////////
 void QuadTree::getCompressedImage( byte **&gray ) const
 {
 	buildCompressedImage( gray, root );
 }
 
+////////////////////////////////////////////////////////////////////////////////
+///			construct the compressed image from the QuadTree object			 ///
+////////////////////////////////////////////////////////////////////////////////
 void QuadTree::buildCompressedImage( byte **&gray, const node *quadrant ) const
 {
 	unsigned i, j;
@@ -115,10 +134,17 @@ void QuadTree::buildCompressedImage( byte **&gray, const node *quadrant ) const
 	buildCompressedImage( gray, quadrant->se );
 }
 
-QuadTree::node *QuadTree::subdivide( byte **&gray, pair<unsigned, unsigned> topLeft, pair<unsigned, unsigned> bottomRight )
+////////////////////////////////////////////////////////////////////////////////
+///		subdivide the image to construct the QuadTree object recursively	 ///
+////////////////////////////////////////////////////////////////////////////////
+QuadTree::node *QuadTree::subdivide( byte **&gray,
+		pair<unsigned, unsigned> topLeft, pair<unsigned, unsigned> bottomRight )
 {
-	node *quadrant = new node( topLeft, bottomRight, evalSubdivision( gray, topLeft, bottomRight ) );
-	pair<unsigned, unsigned> center = { topLeft.first + ( bottomRight.first - topLeft.first ) / 2, topLeft.second + ( bottomRight.second - topLeft.second ) / 2 };
+	node *quadrant = new node( topLeft, bottomRight,
+			evalSubdivision( gray, topLeft, bottomRight ) );
+	pair<unsigned, unsigned> center = { topLeft.first +
+		( bottomRight.first - topLeft.first ) / 2, topLeft.second +
+			( bottomRight.second - topLeft.second ) / 2 };
 	pair<unsigned, unsigned> nwtl = topLeft;
 	pair<unsigned, unsigned> nwbr = center;
 	pair<unsigned, unsigned> swtl = { topLeft.first, center.second };
@@ -128,8 +154,9 @@ QuadTree::node *QuadTree::subdivide( byte **&gray, pair<unsigned, unsigned> topL
 	pair<unsigned, unsigned> setl = center;
 	pair<unsigned, unsigned> sebr = bottomRight;
 
-	if( !needSubdivide( gray, evalSubdivision( gray, topLeft, bottomRight ), topLeft, bottomRight ) ||
-			topLeft.first - bottomRight.first < 2 || topLeft.second - bottomRight.second < 2 )
+	if( !needSubdivide( gray, evalSubdivision( gray, topLeft, bottomRight ),
+				topLeft, bottomRight ) || topLeft.first - bottomRight.first < 2 ||
+			topLeft.second - bottomRight.second < 2 )
 	{
 		leafNodeCount++;
 		return quadrant;
@@ -142,7 +169,15 @@ QuadTree::node *QuadTree::subdivide( byte **&gray, pair<unsigned, unsigned> topL
 	return quadrant;
 }
 
-bool QuadTree::needSubdivide( byte **&gray, const byte rep, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const
+////////////////////////////////////////////////////////////////////////////////
+/// subdivide if the difference between the maximum and minimum pixel values ///
+/// in the quadrant is greater than the threshold, or if the differnce		 ///
+/// between the maximum/minimum pixel value and the parent nodes' pixel		 ///
+/// values is greater than the threshold									 ///
+////////////////////////////////////////////////////////////////////////////////
+bool QuadTree::needSubdivide( byte **&gray, const byte rep,
+		const pair<unsigned, unsigned> topLeft,
+		const pair<unsigned, unsigned> bottomRight ) const
 {
 	unsigned i, j;
 	byte mx = gray[ topLeft.second ][ topLeft.first ];
@@ -164,17 +199,44 @@ bool QuadTree::needSubdivide( byte **&gray, const byte rep, const pair<unsigned,
 	return 0;
 }
 
-unsigned QuadTree::evalSubdivision( byte **&gray, const pair<unsigned, unsigned> topLeft, const pair<unsigned, unsigned> bottomRight ) const
+////////////////////////////////////////////////////////////////////////////////
+/// return the mean of the pixel valeus in the quadrant or return 0 if the	 ///
+///						quadrant has no width or height						 ///
+////////////////////////////////////////////////////////////////////////////////
+unsigned QuadTree::evalSubdivision( byte **&gray,
+		const pair<unsigned, unsigned> topLeft,
+		const pair<unsigned, unsigned> bottomRight ) const
 {
 	unsigned i, j;
 	unsigned sum = 0;
-	if( bottomRight.second - topLeft.second == 0 || bottomRight.first - topLeft.first == 0 )
+	if( bottomRight.second - topLeft.second == 0 ||
+			bottomRight.first - topLeft.first == 0 )
 		return 0;
 	for( i = topLeft.second; i < bottomRight.second; i++ )
 		for( j = topLeft.first; j < bottomRight.first; j++ )
 			sum += gray[i][j];
 	return sum / ( ( bottomRight.second - topLeft.second ) *
 			( bottomRight.first - topLeft.first ) );
+}
+
+unsigned QuadTree::leafCount( ) const
+{
+	return leafNodeCount;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+///					Outputs imformation about the image						 ///
+////////////////////////////////////////////////////////////////////////////////
+void QuadTree::printData( ) const
+{
+	// Calculate compression
+	compression = ( 200 * leafNodeCount ) / uncompressedSize;
+
+	byteCount = 56 * leafNodeCount;
+	// Output to data to console
+	cout << "Leaves = " << leafNodeCount << " mem: " << 2 * leafNodeCount
+		<< " bytes: " << byteCount << " compressed size: " << compression
+		<<"% : Quality Factor [" << int(threshold) << "]" << endl;
 }
 
 void QuadTree::clear( node *n )
@@ -189,16 +251,4 @@ void QuadTree::clear( node *n )
 	clear( n->sw );
 	clear( n->ne );
 	clear( n->se );
-}
-// Outputs imformation about the image
-void QuadTree::printData()
-{
-	// Calculate compression
-	compression = (200 * leafNodeCount) / uncompressedSize;
-
-	byteCount = 56 * leafNodeCount;
-	// Output to data to console
-	cout << "Leaves = " << leafNodeCount << " mem: " << 2 * leafNodeCount 
-		<< " bytes: " << byteCount << " compressed size: " << compression 
-		<<"% : Quality Factor [" << int(threshold) << "]" << endl;
 }
