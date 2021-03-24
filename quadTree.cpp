@@ -13,9 +13,12 @@ QuadTree::QuadTree( byte **&gray, const unsigned width, const unsigned height, c
 	pair<unsigned, unsigned> tl = { 0, 0 };
 	pair<unsigned, unsigned> br = { width, height };
 	leafNodeCount = 0;
+	// 56 bytes per quadrantaccording to valgrind
 	byteCount = 0; // malloc but don't free and ask Valgrind how much I used...
 	compression = 0;
+	uncompressedSize = width * height;
 	root = subdivide( gray, tl, br );
+	printData();
 }
 
 QuadTree::~QuadTree( )
@@ -26,6 +29,9 @@ QuadTree::~QuadTree( )
 
 void QuadTree::decreaseThreshold( byte **&gray, const unsigned width, const unsigned height ) // optomized for rapid protoyping must be an delete routine
 {
+	leafNodeCount = 0;
+	byteCount = 0;
+	compression = 0;
 	pair<unsigned, unsigned> tl = { 0, 0 };
 	pair<unsigned, unsigned> br = { width, height };
 	if( threshold == 255 )
@@ -33,10 +39,14 @@ void QuadTree::decreaseThreshold( byte **&gray, const unsigned width, const unsi
 	threshold++;
 	clear( root );
 	root = subdivide( gray, tl, br );
+	printData();
 }
 
 void QuadTree::increaseThreshold( byte **&gray, const unsigned width, const unsigned height ) // optomized for rapid protoyping must be an delete routine
 {
+	leafNodeCount = 0;
+	byteCount = 0;
+	compression = 0;
 	pair<unsigned, unsigned> tl = { 0, 0 };
 	pair<unsigned, unsigned> br = { width, height };
 	if( !threshold )
@@ -44,6 +54,7 @@ void QuadTree::increaseThreshold( byte **&gray, const unsigned width, const unsi
 	threshold--;
 	clear( root );
 	root = subdivide( gray, tl, br );
+	printData();
 }
 
 void QuadTree::drawLines( byte **&gray ) const
@@ -119,7 +130,10 @@ QuadTree::node *QuadTree::subdivide( byte **&gray, pair<unsigned, unsigned> topL
 
 	if( !needSubdivide( gray, evalSubdivision( gray, topLeft, bottomRight ), topLeft, bottomRight ) ||
 			topLeft.first - bottomRight.first < 2 || topLeft.second - bottomRight.second < 2 )
+	{
+		leafNodeCount++;
 		return quadrant;
+	}
 
 	quadrant->nw = subdivide( gray, nwtl, nwbr );
 	quadrant->sw = subdivide( gray, swtl, swbr );
@@ -175,4 +189,16 @@ void QuadTree::clear( node *n )
 	clear( n->sw );
 	clear( n->ne );
 	clear( n->se );
+}
+// Outputs imformation about the image
+void QuadTree::printData()
+{
+	// Calculate compression
+	compression = (200 * leafNodeCount) / uncompressedSize;
+
+	byteCount = 56 * leafNodeCount;
+	// Output to data to console
+	cout << "Leaves = " << leafNodeCount << " mem: " << 2 * leafNodeCount 
+		<< " bytes: " << byteCount << " compressed size: " << compression 
+		<<"% : Quality Factor [" << int(threshold) << "]" << endl;
 }
