@@ -229,6 +229,7 @@ unsigned QuadTree::leafCount( ) const
 ////////////////////////////////////////////////////////////////////////////////
 void QuadTree::printData( ) const
 {
+	/*
 	// Calculate compression
 	compression = ( 200 * leafNodeCount ) / uncompressedSize;
 
@@ -237,6 +238,7 @@ void QuadTree::printData( ) const
 	cout << "Leaves = " << leafNodeCount << " mem: " << 2 * leafNodeCount
 		<< " bytes: " << byteCount << " compressed size: " << compression
 		<<"% : Quality Factor [" << int(threshold) << "]" << endl;
+		*/
 }
 
 void QuadTree::clear( node *n )
