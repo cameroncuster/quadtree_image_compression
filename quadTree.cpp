@@ -42,8 +42,7 @@ void QuadTree::insert( byte **&gray, node *quadrant )
 	vector<pair<unsigned, unsigned>> childBoundryPoints =
 		getChildBoundryPoints( quadrant->topLeft, quadrant->bottomRight );
 
-	if( quadrant->nw == nullptr && quadrant->sw == nullptr &&
-			quadrant->ne == nullptr && quadrant->se == nullptr )
+	if( quadrant->isLeaf( ) )
 	{
 		if( needSubdivide( gray, quadrant->topLeft, quadrant->bottomRight ) )
 		{
@@ -279,6 +278,11 @@ pair<unsigned, unsigned> QuadTree::getCenter( pair<unsigned, unsigned> topLeft,
 {
 	return { topLeft.first + ( bottomRight.first - topLeft.first ) / 2,
 		topLeft.second + ( bottomRight.second - topLeft.second ) / 2 };
+}
+
+bool QuadTree::node::isLeaf( ) const
+{
+	return nw == nullptr && sw == nullptr && ne == nullptr && se == nullptr;
 }
 
 void QuadTree::clear( node *n )

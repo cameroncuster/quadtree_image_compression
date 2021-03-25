@@ -27,6 +27,8 @@ class QuadTree
 				node *northeast = nullptr, node *southeast = nullptr ):
 			topLeft( tl ), bottomRight( br ), pixelValue( pixVal ),
 			nw( northwest ), sw( southwest ), ne( northeast ), se( southeast ) { }
+
+		bool isLeaf( ) const;
 	};
 	node *root;
 
@@ -75,6 +77,7 @@ class QuadTree
 
 	pair<unsigned, unsigned> getCenter( pair<unsigned, unsigned> topLeft,
 			pair<unsigned, unsigned> bottomRight ) const;
+
 
 	void clear( node *n );
 };
