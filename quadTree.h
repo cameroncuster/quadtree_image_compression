@@ -72,7 +72,7 @@ class QuadTree
 			pair<unsigned, unsigned> topLeft,
 			pair<unsigned, unsigned> bottomRight ) const;
 
-	pair<unsigned, unsigned> getCenter( pair<unsigned, unsigned> topLeft,
+	pair<unsigned, unsigned> center( pair<unsigned, unsigned> topLeft,
 			pair<unsigned, unsigned> bottomRight ) const;
 
 

@@ -254,18 +254,18 @@ vector<pair<unsigned, unsigned>> QuadTree::getChildBoundryPoints(
 		pair<unsigned, unsigned> topLeft,
 		pair<unsigned, unsigned> bottomRight ) const
 {
-	pair<unsigned, unsigned> center = getCenter( topLeft, bottomRight );
+	pair<unsigned, unsigned> c = center( topLeft, bottomRight );
 
-	return { topLeft, center, { topLeft.first, center.second },
-		{ center.first, bottomRight.second }, { center.first, topLeft.second },
-		{ bottomRight.first, center.second }, center, bottomRight };
+	return { topLeft, c, { topLeft.first, c.second },
+		{ c.first, bottomRight.second }, { c.first, topLeft.second },
+		{ bottomRight.first, c.second }, c, bottomRight };
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 /// returns the center of a given quadrant with respect to the top-left and  ///
 ///							  bottom-right points							 ///
 ////////////////////////////////////////////////////////////////////////////////
-pair<unsigned, unsigned> QuadTree::getCenter( pair<unsigned, unsigned> topLeft,
+pair<unsigned, unsigned> QuadTree::center( pair<unsigned, unsigned> topLeft,
 		pair<unsigned, unsigned> bottomRight ) const
 {
 	return { topLeft.first + ( bottomRight.first - topLeft.first ) / 2,
