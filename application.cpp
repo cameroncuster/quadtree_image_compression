@@ -27,12 +27,11 @@ Application::~Application( )
 // Outputs information about the QuadTree and image compression
 void Application::output( ) const
 {
-	cout << "Nodes: " << quadTree->size( ) << endl <<
-		"Leaf Nodes: " << quadTree->leafCount( ) << endl <<
-		"Bytes for Image: " << width * height << endl <<
-		"Bytes for QuadTree: " << 2 * quadTree->leafCount( ) << endl <<
-		"Compression: " << 100 * ( ( 2 * quadTree->leafCount( ) ) /
-				( width * height ) ) << endl << endl << endl;
+	cout << "Leaves = " << quadTree->leafCount( ) << " mem: " << width * height <<
+		" bytes: " << 2 * quadTree->leafCount( ) << " compressed size: " <<
+		int( 100.0 * ( ( 2.0 * ( double )quadTree->leafCount( ) )
+					/ ( double )( width * height ) )  + 0.5 ) << '%' <<
+		" : Quality Factor " << '[' << threshold << ']' << endl;
 }
 
 // Called once at the start, so create things here
@@ -54,17 +53,22 @@ bool Application::OnUserUpdate(float fElapsedTime)
 	if( GetKey( olc::Key::UP ).bPressed )
 	{
 		quadTree->increaseThreshold( greyScale, width, height );
-		output( );
+		if( threshold != quadTree->getThreshold( ) )
+			output( );
 	}
 	if( GetKey( olc::Key::DOWN ).bPressed )
 	{
 		quadTree->decreaseThreshold( greyScale, width, height );
-		output( );
+		if( threshold != quadTree->getThreshold( ) )
+			output( );
 	}
+
+	threshold = quadTree->getThreshold( );
 
 	// set the compressed image to the quadTree compressed image
 	quadTree->getCompressedImage( compressed );
 
+	// draw the lines if the lines are flagged true
 	if( lines )
 		quadTree->drawLines( compressed );
 

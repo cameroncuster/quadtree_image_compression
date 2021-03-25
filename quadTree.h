@@ -54,6 +54,8 @@ class QuadTree
 
 	unsigned size( ) const;
 
+	byte getThreshold( ) const;
+
 	private:
 	node *subdivide( byte **&gray, pair<unsigned, unsigned> topLeft,
 			pair<unsigned, unsigned> bottomRight );

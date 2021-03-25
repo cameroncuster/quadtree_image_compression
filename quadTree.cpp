@@ -250,6 +250,11 @@ unsigned QuadTree::size( ) const
 	return nodeCount;
 }
 
+byte QuadTree::getThreshold( ) const
+{
+	return threshold;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 /// returns the top-left and bottom-right points of all 4 children quadrants ///
 /// given the top-left and bottom-right of the parent						 ///
