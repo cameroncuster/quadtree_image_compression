@@ -29,7 +29,6 @@ public:
     int Height() const;
 
 private:
-	void updateQuadTree( ) const;
+	void informationAboutQuadTreeUpdate( ostream &out ) const;
 };
-
 #endif

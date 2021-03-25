@@ -24,10 +24,10 @@ Application::~Application( )
 	delete quadTree;
 }
 
-// Outputs information about the updated/new QuadTree and image compression
-void Application::updateQuadTree( ) const
+// formats information about the updated/new QuadTree and image compression for output log
+void Application::informationAboutQuadTreeUpdate( ostream &out ) const
 {
-	cout << "Leaves = " << quadTree->leafCount( ) << " mem: " << width * height <<
+	out << "Leaves = " << quadTree->leafCount( ) << " mem: " << width * height <<
 		" bytes: " << 2 * quadTree->leafCount( ) << " compressed size: " <<
 		int( 100.0 * ( ( 2.0 * ( double )quadTree->leafCount( ) )
 					/ ( double )( width * height ) )  + 0.5 ) << '%' <<
@@ -41,7 +41,7 @@ bool Application::OnUserCreate()
 	greyScale = convertToGreyscale((int **)image, width, height);
 	compressed = convertToGreyscale((int **)image, width, height);
 	quadTree = new QuadTree( greyScale, width, height, threshold );
-	updateQuadTree( );
+	informationAboutQuadTreeUpdate( cout );
 	return true;
 }
 
@@ -54,13 +54,13 @@ bool Application::OnUserUpdate(float fElapsedTime)
 	{
 		quadTree->incrementThreshold( greyScale, width, height );
 		if( threshold != quadTree->threshold( ) )
-			updateQuadTree( );
+			informationAboutQuadTreeUpdate( cout );
 	}
 	if( GetKey( olc::Key::DOWN ).bPressed )
 	{
 		quadTree->decrementThreshold( greyScale, width, height );
 		if( threshold != quadTree->threshold( ) )
-			updateQuadTree( );
+			informationAboutQuadTreeUpdate( cout );
 	}
 
 	threshold = quadTree->threshold( );
