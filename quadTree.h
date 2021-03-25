@@ -60,6 +60,10 @@ class QuadTree
 	private:
 	node *subdivide( byte **&gray, pair<unsigned, unsigned> topLeft,
 			pair<unsigned, unsigned> bottomRight );
+
+	void insert( byte **&gray, node *quadrant );
+	void remove( byte **&gray, node *quadrant );
+
 	bool needSubdivide( byte **&gray, const byte rep,
 			const pair<unsigned, unsigned> topLeft,
 			const pair<unsigned, unsigned> bottomRight ) const;

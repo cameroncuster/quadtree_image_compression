@@ -35,38 +35,96 @@ QuadTree::~QuadTree( )
 ///		   insert nodes as necessary to maintain the tighter threshold		 ///
 ////////////////////////////////////////////////////////////////////////////////
 void QuadTree::decreaseThreshold( byte **&gray, const unsigned width,
-		const unsigned height ) // optomized for rapid protoyping must be an delete routine
+		const unsigned height ) // optomized for rapid protoyping must be an insert routine
 {
-	leafNodeCount = 0;
-	byteCount = 0;
-	compression = 0;
-	pair<unsigned, unsigned> tl = { 0, 0 };
-	pair<unsigned, unsigned> br = { width, height };
-	if( threshold == 255 )
+	if( threshold < 0 )
 		return;
-	threshold++;
-	clear( root );
-	root = subdivide( gray, tl, br );
-	printData();
+	threshold--;
+	insert( gray, root );
+
+	/*
+	   leafNodeCount = 0;
+	   byteCount = 0;
+	   compression = 0;
+	   pair<unsigned, unsigned> tl = { 0, 0 };
+	   pair<unsigned, unsigned> br = { width, height };
+	   if( !threshold )
+	   return;
+	   threshold--;
+	   clear( root );
+	   root = subdivide( gray, tl, br );
+	   printData();
+	 */
+}
+
+void QuadTree::insert( byte **&gray, node *quadrant )
+{
+	vector<pair<unsigned, unsigned>> childBoundryPoints =
+		getChildBoundryPoints( quadrant->topLeft, quadrant->bottomRight );
+
+	if( quadrant->nw == nullptr && quadrant->sw == nullptr &&
+			quadrant->ne == nullptr && quadrant->se == nullptr )
+	{
+		quadrant->nw = subdivide( gray, childBoundryPoints[0], childBoundryPoints[1] );
+		quadrant->sw = subdivide( gray, childBoundryPoints[2], childBoundryPoints[3] );
+		quadrant->ne = subdivide( gray, childBoundryPoints[4], childBoundryPoints[5] );
+		quadrant->se = subdivide( gray, childBoundryPoints[6], childBoundryPoints[7] );
+		return;
+	}
+
+	insert( gray, quadrant->nw );
+	insert( gray, quadrant->sw );
+	insert( gray, quadrant->ne );
+	insert( gray, quadrant->se );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ///		   delete nodes while possible to maintain the looser threshold		 ///
 ////////////////////////////////////////////////////////////////////////////////
 void QuadTree::increaseThreshold( byte **&gray, const unsigned width,
-		const unsigned height ) // optomized for rapid protoyping must be an delete routine
+		const unsigned height ) // optomized for rapid protoyping must be a delete routine
 {
-	leafNodeCount = 0;
-	byteCount = 0;
-	compression = 0;
-	pair<unsigned, unsigned> tl = { 0, 0 };
-	pair<unsigned, unsigned> br = { width, height };
-	if( !threshold )
+	if( threshold >= 255 )
 		return;
-	threshold--;
-	clear( root );
-	root = subdivide( gray, tl, br );
-	printData();
+	threshold++;
+	remove( gray, root );
+
+	/*
+	   leafNodeCount = 0;
+	   byteCount = 0;
+	   compression = 0;
+	   pair<unsigned, unsigned> tl = { 0, 0 };
+	   pair<unsigned, unsigned> br = { width, height };
+	   if( threshold == 255 )
+	   return;
+	   threshold++;
+	   clear( root );
+	   root = subdivide( gray, tl, br );
+	   printData();
+	 */
+}
+
+void QuadTree::remove( byte **&gray, node *quadrant )
+{
+	if( !needSubdivide( gray, quadrant->pixelValue, quadrant->topLeft, quadrant->bottomRight ) )
+	{
+		clear( quadrant->nw );
+		clear( quadrant->sw );
+		clear( quadrant->ne );
+		clear( quadrant->se );
+
+		quadrant->nw = nullptr;
+		quadrant->sw = nullptr;
+		quadrant->ne = nullptr;
+		quadrant->se = nullptr;
+
+		return;
+	}
+
+	remove( gray, quadrant->nw );
+	remove( gray, quadrant->sw );
+	remove( gray, quadrant->ne );
+	remove( gray, quadrant->se );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -272,4 +330,6 @@ void QuadTree::clear( node *n )
 	clear( n->sw );
 	clear( n->ne );
 	clear( n->se );
+
+	delete n;
 }
