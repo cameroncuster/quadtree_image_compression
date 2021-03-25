@@ -8,9 +8,7 @@ using namespace std;
 typedef unsigned char byte;
 
 // TODO
-// Implement threshold increment and decrement as floating point
-// Speed up increment and decrement with insert and delete
-// Document Code
+// Document Code and correct output by setting leaf node count
 class QuadTree
 {
 	byte threshold;
@@ -34,7 +32,7 @@ class QuadTree
 
 	unsigned nodeCount;
 	unsigned leafNodeCount;
-	unsigned byteCount; // malloc but don't free and ask Valgrind how much I used...
+	unsigned byteCount;
 
 	public:
 	QuadTree( byte **&gray, const unsigned width, const unsigned height,
