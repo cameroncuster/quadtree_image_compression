@@ -140,19 +140,11 @@ void QuadTree::buildCompressedImage( byte **&gray, const node *quadrant ) const
 QuadTree::node *QuadTree::subdivide( byte **&gray,
 		pair<unsigned, unsigned> topLeft, pair<unsigned, unsigned> bottomRight )
 {
+	vector<pair<unsigned, unsigned>> childBoundryPoints =
+		getChildBoundryPoints( topLeft, bottomRight );
+
 	node *quadrant = new node( topLeft, bottomRight,
 			evalSubdivision( gray, topLeft, bottomRight ) );
-	pair<unsigned, unsigned> center = { topLeft.first +
-		( bottomRight.first - topLeft.first ) / 2, topLeft.second +
-			( bottomRight.second - topLeft.second ) / 2 };
-	pair<unsigned, unsigned> nwtl = topLeft;
-	pair<unsigned, unsigned> nwbr = center;
-	pair<unsigned, unsigned> swtl = { topLeft.first, center.second };
-	pair<unsigned, unsigned> swbr = { center.first, bottomRight.second };
-	pair<unsigned, unsigned> netl = { center.first, topLeft.second };
-	pair<unsigned, unsigned> nebr = { bottomRight.first, center.second };
-	pair<unsigned, unsigned> setl = center;
-	pair<unsigned, unsigned> sebr = bottomRight;
 
 	if( !needSubdivide( gray, evalSubdivision( gray, topLeft, bottomRight ),
 				topLeft, bottomRight ) || topLeft.first - bottomRight.first < 2 ||
@@ -162,10 +154,11 @@ QuadTree::node *QuadTree::subdivide( byte **&gray,
 		return quadrant;
 	}
 
-	quadrant->nw = subdivide( gray, nwtl, nwbr );
-	quadrant->sw = subdivide( gray, swtl, swbr );
-	quadrant->ne = subdivide( gray, netl, nebr );
-	quadrant->se = subdivide( gray, setl, sebr );
+	quadrant->nw = subdivide( gray, childBoundryPoints[0], childBoundryPoints[1] );
+	quadrant->sw = subdivide( gray, childBoundryPoints[2], childBoundryPoints[3] );
+	quadrant->ne = subdivide( gray, childBoundryPoints[4], childBoundryPoints[5] );
+	quadrant->se = subdivide( gray, childBoundryPoints[6], childBoundryPoints[7] );
+
 	return quadrant;
 }
 
@@ -200,7 +193,7 @@ bool QuadTree::needSubdivide( byte **&gray, const byte rep,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-/// return the mean of the pixel valeus in the quadrant or return 0 if the	 ///
+/// returns the mean of the pixel values in the quadrant or return 0 if the	 ///
 ///						quadrant has no width or height						 ///
 ////////////////////////////////////////////////////////////////////////////////
 unsigned QuadTree::evalSubdivision( byte **&gray,
@@ -236,9 +229,35 @@ void QuadTree::printData( ) const
 	byteCount = 56 * leafNodeCount;
 	// Output to data to console
 	cout << "Leaves = " << leafNodeCount << " mem: " << 2 * leafNodeCount
-		<< " bytes: " << byteCount << " compressed size: " << compression
-		<<"% : Quality Factor [" << int(threshold) << "]" << endl;
-		*/
+	<< " bytes: " << byteCount << " compressed size: " << compression
+	<<"% : Quality Factor [" << int(threshold) << "]" << endl;
+	 */
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/// returns the top-left and bottom-right points of all 4 children quadrants ///
+/// given the top-left and bottom-right of the parent						 ///
+////////////////////////////////////////////////////////////////////////////////
+vector<pair<unsigned, unsigned>> QuadTree::getChildBoundryPoints(
+		pair<unsigned, unsigned> topLeft,
+		pair<unsigned, unsigned> bottomRight ) const
+{
+	pair<unsigned, unsigned> center = getCenter( topLeft, bottomRight );
+
+	return { topLeft, center, { topLeft.first, center.second },
+		{ center.first, bottomRight.second }, { center.first, topLeft.second },
+		{ bottomRight.first, center.second }, center, bottomRight };
+}
+
+////////////////////////////////////////////////////////////////////////////////
+/// returns the center of a given quadrant with respect to the top-left and  ///
+///							  bottom-right points							 ///
+////////////////////////////////////////////////////////////////////////////////
+pair<unsigned, unsigned> QuadTree::getCenter( pair<unsigned, unsigned> topLeft,
+		pair<unsigned, unsigned> bottomRight ) const
+{
+	return { topLeft.first + ( bottomRight.first - topLeft.first ) / 2,
+		topLeft.second + ( bottomRight.second - topLeft.second ) / 2 };
 }
 
 void QuadTree::clear( node *n )
