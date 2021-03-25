@@ -37,7 +37,7 @@ QuadTree::~QuadTree( )
 void QuadTree::decreaseThreshold( byte **&gray, const unsigned width,
 		const unsigned height ) // optomized for rapid protoyping must be an insert routine
 {
-	if( threshold < 0 )
+	if( threshold < 1 )
 		return;
 	threshold--;
 	insert( gray, root );
@@ -87,7 +87,7 @@ void QuadTree::insert( byte **&gray, node *quadrant )
 void QuadTree::increaseThreshold( byte **&gray, const unsigned width,
 		const unsigned height ) // optomized for rapid protoyping must be a delete routine
 {
-	if( threshold >= 255 )
+	if( threshold > 255 )
 		return;
 	threshold++;
 	remove( gray, root );
