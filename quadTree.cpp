@@ -44,7 +44,7 @@ void QuadTree::insert( byte **&gray, node *quadrant )
 
 	if( quadrant->isLeaf( ) )
 	{
-		if( needSubdivide( gray, quadrant->topLeft, quadrant->bottomRight ) )
+		if( evalSubdivision( gray, quadrant->topLeft, quadrant->bottomRight, 1 ) )
 		{
 			quadrant->nw = subdivide( gray, childBoundryPoints[0], childBoundryPoints[1] );
 			quadrant->sw = subdivide( gray, childBoundryPoints[2], childBoundryPoints[3] );
@@ -77,7 +77,7 @@ void QuadTree::increaseThreshold( byte **&gray, const unsigned width,
 ////////////////////////////////////////////////////////////////////////////////
 void QuadTree::remove( byte **&gray, node *quadrant )
 {
-	if( !needSubdivide( gray, quadrant->topLeft, quadrant->bottomRight ) )
+	if( !evalSubdivision( gray, quadrant->topLeft, quadrant->bottomRight, 1 ) )
 	{
 		// udpate leaf node count
 		clear( quadrant->nw );
@@ -176,9 +176,9 @@ QuadTree::node *QuadTree::subdivide( byte **&gray,
 
 	nodeCount++;
 	node *quadrant = new node( topLeft, bottomRight,
-			evalSubdivision( gray, topLeft, bottomRight ) );
+			evalSubdivision( gray, topLeft, bottomRight, 0 ) );
 
-	if( !needSubdivide( gray, topLeft, bottomRight ) ||
+	if( !evalSubdivision( gray, topLeft, bottomRight, 1 ) ||
 			topLeft.first - bottomRight.first < 2 ||
 			topLeft.second - bottomRight.second < 2 )
 	{
@@ -199,45 +199,36 @@ QuadTree::node *QuadTree::subdivide( byte **&gray,
 /// in the quadrant and the mean of the quadrant is greater than the		 ///
 /// threshold																 ///
 ////////////////////////////////////////////////////////////////////////////////
-bool QuadTree::needSubdivide( byte **&gray,
-		const pair<unsigned, unsigned> topLeft,
-		const pair<unsigned, unsigned> bottomRight ) const
-{
-	unsigned i, j;
-	byte mx = gray[ topLeft.second ][ topLeft.first ];
-	byte mn = gray[ topLeft.second ][ topLeft.first ];
-	for( i = topLeft.second; i < bottomRight.second; i++ )
-		for( j = topLeft.first; j < bottomRight.first; j++ )
-		{
-			if( gray[i][j] > mx )
-				mx = gray[i][j];
-			if( gray[i][j] < mn )
-				mn = gray[i][j];
-		}
-	if( mx - evalSubdivision( gray, topLeft, bottomRight ) <= threshold &&
-			evalSubdivision( gray, topLeft, bottomRight ) - mn <= threshold )
-		return 0;
-	return 1;
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 /// returns the mean of the pixel values in the quadrant or return 0 if the	 ///
 ///						quadrant has no width or height						 ///
 ////////////////////////////////////////////////////////////////////////////////
-unsigned QuadTree::evalSubdivision( byte **&gray,
+byte QuadTree::evalSubdivision( byte **&gray,
 		const pair<unsigned, unsigned> topLeft,
-		const pair<unsigned, unsigned> bottomRight ) const
+		const pair<unsigned, unsigned> bottomRight, bool need ) const
 {
 	unsigned i, j;
 	unsigned sum = 0;
+	byte mean;
+	byte mx = gray[ topLeft.second ][ topLeft.first ];
+	byte mn = gray[ topLeft.second ][ topLeft.first ];
 	if( bottomRight.second - topLeft.second == 0 ||
 			bottomRight.first - topLeft.first == 0 )
 		return 0;
 	for( i = topLeft.second; i < bottomRight.second; i++ )
 		for( j = topLeft.first; j < bottomRight.first; j++ )
+		{
 			sum += gray[i][j];
-	return sum / ( ( bottomRight.second - topLeft.second ) *
-			( bottomRight.first - topLeft.first ) );
+			if( gray[i][j] > mx )
+				mx = gray[i][j];
+			if( gray[i][j] < mn )
+				mn = gray[i][j];
+		}
+	mean = sum / ( ( bottomRight.second - topLeft.second ) *
+			( bottomRight.first - topLeft.first ) ) + 0.5;
+	if( need && mx - mean <= threshold && mean - mn <= threshold )
+		return 0;
+	return mean;
 }
 
 unsigned QuadTree::leafCount( ) const

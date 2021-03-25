@@ -8,7 +8,7 @@ using namespace std;
 typedef unsigned char byte;
 
 // TODO
-// Document Code and correct output by setting leaf node count
+// Document Code and correct output by setting counts
 class QuadTree
 {
 	byte threshold;
@@ -63,11 +63,9 @@ class QuadTree
 	void insert( byte **&gray, node *quadrant );
 	void remove( byte **&gray, node *quadrant );
 
-	bool needSubdivide( byte **&gray, const pair<unsigned, unsigned> topLeft,
-			const pair<unsigned, unsigned> bottomRight ) const;
-	unsigned evalSubdivision( byte **&gray,
+	byte evalSubdivision( byte **&gray,
 			const pair<unsigned, unsigned> topLeft,
-			const pair<unsigned, unsigned> bottomRight ) const;
+			const pair<unsigned, unsigned> bottomRight, bool need ) const;
 	void buildCompressedImage( byte **&gray, const node *quadrant ) const;
 	void addLines( byte **&gray, const node *quadrant ) const;
 
