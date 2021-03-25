@@ -29,7 +29,7 @@ public:
     int Height() const;
 
 private:
-	void output( ) const;
+	void updateQuadTree( ) const;
 };
 
 #endif

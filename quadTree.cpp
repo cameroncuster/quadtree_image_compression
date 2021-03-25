@@ -7,7 +7,7 @@ using namespace std;
 ///			Construct a new QuadTree given an image and a threshold			 ///
 ////////////////////////////////////////////////////////////////////////////////
 QuadTree::QuadTree( byte **&gray, const unsigned width, const unsigned height,
-		const byte thresh ) : threshold( thresh ), nodeCount( 0 ), leafNodeCount( 0 )
+		const byte thresh ) : tolerance( thresh ), nodeCount( 0 ), leafNodeCount( 0 )
 {
 	if( gray == nullptr || !width || !height )
 		throw;
@@ -25,12 +25,12 @@ QuadTree::~QuadTree( )
 ////////////////////////////////////////////////////////////////////////////////
 ///		   insert nodes as necessary to maintain the tighter threshold		 ///
 ////////////////////////////////////////////////////////////////////////////////
-void QuadTree::decreaseThreshold( byte **&gray, const unsigned width,
+void QuadTree::decrementThreshold( byte **&gray, const unsigned width,
 		const unsigned height )
 {
-	if( threshold < 1 )
+	if( tolerance < 1 )
 		return;
-	threshold--;
+	tolerance--;
 	insert( gray, root );
 }
 
@@ -63,12 +63,12 @@ void QuadTree::insert( byte **&gray, node *quadrant )
 ////////////////////////////////////////////////////////////////////////////////
 ///		   delete nodes while possible to maintain the looser threshold		 ///
 ////////////////////////////////////////////////////////////////////////////////
-void QuadTree::increaseThreshold( byte **&gray, const unsigned width,
+void QuadTree::incrementThreshold( byte **&gray, const unsigned width,
 		const unsigned height )
 {
-	if( threshold > 255 )
+	if( tolerance > 255 )
 		return;
-	threshold++;
+	tolerance++;
 	remove( gray, root );
 }
 
@@ -226,7 +226,7 @@ byte QuadTree::evalSubdivision( byte **&gray,
 		}
 	mean = sum / ( ( bottomRight.second - topLeft.second ) *
 			( bottomRight.first - topLeft.first ) ) + 0.5;
-	if( need && mx - mean <= threshold && mean - mn <= threshold )
+	if( need && mx - mean <= tolerance && mean - mn <= tolerance )
 		return 0;
 	return mean;
 }
@@ -241,9 +241,9 @@ unsigned QuadTree::size( ) const
 	return nodeCount;
 }
 
-byte QuadTree::getThreshold( ) const
+byte QuadTree::threshold( ) const
 {
-	return threshold;
+	return tolerance;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

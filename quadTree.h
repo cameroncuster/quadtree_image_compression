@@ -7,11 +7,8 @@ using namespace std;
 
 typedef unsigned char byte;
 
-// TODO
-// Document Code and correct output by setting counts
 class QuadTree
 {
-	byte threshold;
 	struct node
 	{
 		pair<unsigned, unsigned> topLeft;
@@ -30,20 +27,21 @@ class QuadTree
 
 		bool isLeaf( ) const;
 	};
+
 	node *root;
 
+	byte tolerance;
 	unsigned nodeCount;
 	unsigned leafNodeCount;
-	unsigned byteCount;
 
 	public:
 	QuadTree( byte **&gray, const unsigned width, const unsigned height,
 			const byte thresh );
 	~QuadTree( );
 
-	void decreaseThreshold( byte **&gray, const unsigned width,
+	void decrementThreshold( byte **&gray, const unsigned width,
 			const unsigned height );
-	void increaseThreshold( byte **&gray, const unsigned width,
+	void incrementThreshold( byte **&gray, const unsigned width,
 			const unsigned height );
 
 	unsigned leafCount( ) const;
@@ -54,18 +52,19 @@ class QuadTree
 
 	unsigned size( ) const;
 
-	byte getThreshold( ) const;
+	byte threshold( ) const;
 
 	private:
 	node *subdivide( byte **&gray, pair<unsigned, unsigned> topLeft,
 			pair<unsigned, unsigned> bottomRight );
 
-	void insert( byte **&gray, node *quadrant );
-	void remove( byte **&gray, node *quadrant );
-
 	byte evalSubdivision( byte **&gray,
 			const pair<unsigned, unsigned> topLeft,
 			const pair<unsigned, unsigned> bottomRight, bool need ) const;
+
+	void insert( byte **&gray, node *quadrant );
+	void remove( byte **&gray, node *quadrant );
+
 	void buildCompressedImage( byte **&gray, const node *quadrant ) const;
 	void addLines( byte **&gray, const node *quadrant ) const;
 
