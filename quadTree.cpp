@@ -17,7 +17,6 @@ QuadTree::QuadTree( byte **&gray, const unsigned width, const unsigned height,
 	pair<unsigned, unsigned> tl = { 0, 0 };
 	pair<unsigned, unsigned> br = { width, height };
 	leafNodeCount = 0;
-	// 56 bytes per quadrantaccording to valgrind
 	byteCount = 0; // malloc but don't free and ask Valgrind how much I used...
 	compression = 0;
 	uncompressedSize = width * height;
@@ -35,28 +34,17 @@ QuadTree::~QuadTree( )
 ///		   insert nodes as necessary to maintain the tighter threshold		 ///
 ////////////////////////////////////////////////////////////////////////////////
 void QuadTree::decreaseThreshold( byte **&gray, const unsigned width,
-		const unsigned height ) // optomized for rapid protoyping must be an insert routine
+		const unsigned height )
 {
 	if( threshold < 1 )
 		return;
 	threshold--;
 	insert( gray, root );
-
-	/*
-	   leafNodeCount = 0;
-	   byteCount = 0;
-	   compression = 0;
-	   pair<unsigned, unsigned> tl = { 0, 0 };
-	   pair<unsigned, unsigned> br = { width, height };
-	   if( !threshold )
-	   return;
-	   threshold--;
-	   clear( root );
-	   root = subdivide( gray, tl, br );
-	   printData();
-	 */
 }
 
+////////////////////////////////////////////////////////////////////////////////
+/// updates QuadTree by inserting new nodes on account of updated threshold  ///
+////////////////////////////////////////////////////////////////////////////////
 void QuadTree::insert( byte **&gray, node *quadrant )
 {
 	vector<pair<unsigned, unsigned>> childBoundryPoints =
@@ -85,32 +73,22 @@ void QuadTree::insert( byte **&gray, node *quadrant )
 ///		   delete nodes while possible to maintain the looser threshold		 ///
 ////////////////////////////////////////////////////////////////////////////////
 void QuadTree::increaseThreshold( byte **&gray, const unsigned width,
-		const unsigned height ) // optomized for rapid protoyping must be a delete routine
+		const unsigned height )
 {
 	if( threshold > 255 )
 		return;
 	threshold++;
 	remove( gray, root );
-
-	/*
-	   leafNodeCount = 0;
-	   byteCount = 0;
-	   compression = 0;
-	   pair<unsigned, unsigned> tl = { 0, 0 };
-	   pair<unsigned, unsigned> br = { width, height };
-	   if( threshold == 255 )
-	   return;
-	   threshold++;
-	   clear( root );
-	   root = subdivide( gray, tl, br );
-	   printData();
-	 */
 }
 
+////////////////////////////////////////////////////////////////////////////////
+///		  updates QuadTree on account of new threshold by removing nodes	 ///
+////////////////////////////////////////////////////////////////////////////////
 void QuadTree::remove( byte **&gray, node *quadrant )
 {
 	if( !needSubdivide( gray, quadrant->topLeft, quadrant->bottomRight ) )
 	{
+		// udpate leaf node count
 		clear( quadrant->nw );
 		clear( quadrant->sw );
 		clear( quadrant->ne );
@@ -141,7 +119,7 @@ void QuadTree::drawLines( byte **&gray ) const
 ////////////////////////////////////////////////////////////////////////////////
 ///		draw the lines as directed by the dimenstions stored in each node	 ///
 ////////////////////////////////////////////////////////////////////////////////
-void QuadTree::addLines( byte **&gray, const node *quadrant ) const // rapid protoyping: lines could be stored externally from the quadTree node structure
+void QuadTree::addLines( byte **&gray, const node *quadrant ) const
 {
 	unsigned i;
 
@@ -181,7 +159,7 @@ void QuadTree::buildCompressedImage( byte **&gray, const node *quadrant ) const
 {
 	unsigned i, j;
 	if( quadrant->nw == nullptr && quadrant->sw == nullptr &&
-			quadrant->ne == nullptr && quadrant->se == nullptr ) // less operations than overwriting every recursive call
+			quadrant->ne == nullptr && quadrant->se == nullptr )
 	{
 		for( i = quadrant->topLeft.second; i < quadrant->bottomRight.second; i++ )
 			for( j = quadrant->topLeft.first; j < quadrant->bottomRight.first; j++ )
@@ -286,7 +264,7 @@ void QuadTree::printData( ) const
 	cout << "Leaves = " << leafNodeCount << " mem: " << 2 * leafNodeCount
 	<< " bytes: " << byteCount << " compressed size: " << compression
 	<<"% : Quality Factor [" << int(threshold) << "]" << endl;
-	 */
+	*/
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -327,6 +305,4 @@ void QuadTree::clear( node *n )
 	clear( n->sw );
 	clear( n->ne );
 	clear( n->se );
-
-	delete n;
 }

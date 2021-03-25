@@ -45,9 +45,9 @@ class QuadTree
 	~QuadTree( );
 
 	void decreaseThreshold( byte **&gray, const unsigned width,
-			const unsigned height ); // optomized for rapid protoyping must be an delete routine
+			const unsigned height );
 	void increaseThreshold( byte **&gray, const unsigned width,
-			const unsigned height ); // optomized for rapid protoyping must be an delete routine
+			const unsigned height );
 
 	unsigned leafCount( ) const;
 
