@@ -68,7 +68,7 @@ class QuadTree
 	void buildCompressedImage( byte **&gray, const node *quadrant ) const;
 	void addLines( byte **&gray, const node *quadrant ) const;
 
-	vector<pair<unsigned, unsigned>> getChildBoundryPoints(
+	vector<pair<unsigned, unsigned>> calculateChildBoundryPoints(
 			pair<unsigned, unsigned> topLeft,
 			pair<unsigned, unsigned> bottomRight ) const;
 

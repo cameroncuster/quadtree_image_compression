@@ -40,7 +40,7 @@ void QuadTree::decrementThreshold( byte **&gray, const unsigned width,
 void QuadTree::insert( byte **&gray, node *quadrant )
 {
 	vector<pair<unsigned, unsigned>> childBoundryPoints =
-		getChildBoundryPoints( quadrant->topLeft, quadrant->bottomRight );
+		calculateChildBoundryPoints( quadrant->topLeft, quadrant->bottomRight );
 
 	if( quadrant->isLeaf( ) )
 	{
@@ -172,7 +172,7 @@ QuadTree::node *QuadTree::subdivide( byte **&gray,
 		pair<unsigned, unsigned> topLeft, pair<unsigned, unsigned> bottomRight )
 {
 	vector<pair<unsigned, unsigned>> childBoundryPoints =
-		getChildBoundryPoints( topLeft, bottomRight );
+		calculateChildBoundryPoints( topLeft, bottomRight );
 
 	nodeCount++;
 	node *quadrant = new node( topLeft, bottomRight,
@@ -250,7 +250,7 @@ byte QuadTree::threshold( ) const
 /// returns the top-left and bottom-right points of all 4 children quadrants ///
 /// given the top-left and bottom-right of the parent						 ///
 ////////////////////////////////////////////////////////////////////////////////
-vector<pair<unsigned, unsigned>> QuadTree::getChildBoundryPoints(
+vector<pair<unsigned, unsigned>> QuadTree::calculateChildBoundryPoints(
 		pair<unsigned, unsigned> topLeft,
 		pair<unsigned, unsigned> bottomRight ) const
 {
