@@ -286,7 +286,7 @@ void QuadTree::clear( node *n )
 QuadTree::QuadTree( byte **&gray, const unsigned width, const unsigned height,
 		const byte thresh ) : tolerance( thresh ), nodeCount( 0 ), leafNodeCount( 0 )
 {
-	if( gray == nullptr || !width || !height )
+	if( gray == nullptr || !width || !height ) // test
 		throw;
 	pair<unsigned, unsigned> tl = { 0, 0 };
 	pair<unsigned, unsigned> br = { width, height };
@@ -321,7 +321,7 @@ void QuadTree::drawLines( byte **&gray ) const
 void QuadTree::incrementThreshold( byte **&gray, const unsigned width,
 		const unsigned height )
 {
-	if( tolerance > 255 )
+	if( tolerance > 254 )
 		return;
 	tolerance++;
 	remove( gray, root );
