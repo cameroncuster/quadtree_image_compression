@@ -34,7 +34,7 @@ class QuadTree
 	unsigned nodeCount;
 	unsigned leafNodeCount;
 
-	public:
+public:
 	// construct a QuadTree given an image and a threshold
 	QuadTree( byte **&gray, const unsigned width, const unsigned height,
 			const byte thresh );
@@ -59,7 +59,7 @@ class QuadTree
 
 	~QuadTree( );
 
-	private:
+private:
 	// subdivide the image into Quadrants and store them as nodes in the QuadTree
 	node *subdivide( byte **&gray, pair<unsigned, unsigned> topLeft,
 			pair<unsigned, unsigned> bottomRight );
