@@ -1,7 +1,5 @@
 #include "quadTree.h"
 #include "alloc2d.h"
-#include <cmath>
-#include <iostream>
 
 using namespace std;
 
@@ -197,8 +195,9 @@ QuadTree::node *QuadTree::subdivide( byte **&gray,
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-/// subdivide if the difference between the maximum and minimum pixel values ///
-/// in the quadrant is greater than the threshold							 ///
+/// subdivide if the difference between the maximum or minimum pixel values  ///
+/// in the quadrant and the mean of the quadrant is greater than the		 ///
+/// threshold																 ///
 ////////////////////////////////////////////////////////////////////////////////
 bool QuadTree::needSubdivide( byte **&gray,
 		const pair<unsigned, unsigned> topLeft,
@@ -214,10 +213,11 @@ bool QuadTree::needSubdivide( byte **&gray,
 				mx = gray[i][j];
 			if( gray[i][j] < mn )
 				mn = gray[i][j];
-			if( mx - mn > threshold )
-				return 1;
 		}
-	return 0;
+	if( mx - evalSubdivision( gray, topLeft, bottomRight ) <= threshold &&
+			evalSubdivision( gray, topLeft, bottomRight ) - mn <= threshold )
+		return 0;
+	return 1;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
