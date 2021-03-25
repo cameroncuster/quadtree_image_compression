@@ -13,11 +13,11 @@ class Application : public olc::PixelGameEngine
    byte **greyScale;
    byte **compressed;
    unsigned width, height;
-   int threshold;
+   byte threshold;
    QuadTree *quadTree;
    bool lines;
 public:
-	Application(const char *, int);
+	Application(const char *, byte);
 	~Application( );
 
 public:

@@ -11,7 +11,11 @@ olc::Pixel byteToGreyscalePixel(byte pixelByte)
 int Application::Width() const { return width ; }
 int Application::Height() const { return height ; }
 
-Application::Application(const char *filename, int thresh) : filename(filename), threshold(thresh % 255), lines(0)
+// threshold instantiated with value [0 - 254] because a threshold outside the
+// range [0 - 254] is not applicable for the application since this is the
+// limitation of a pixel value ( e.a. a threshold of 255 is equivalent to any
+// threshold greater than 255 in implementation )
+Application::Application(const char *filename, byte thresh) : filename(filename), threshold(thresh), lines(0)
 {
 	sAppName = "Application";
 	// read an RGBA PNG image from a file.  Need to read it here so we have the width
@@ -31,7 +35,7 @@ void Application::informationAboutQuadTreeUpdate( ostream &out ) const
 		" bytes: " << 2 * quadTree->leafCount( ) << " compressed size: " <<
 		int( 100.0 * ( ( 2.0 * ( double )quadTree->leafCount( ) )
 					/ ( double )( width * height ) )  + 0.5 ) << '%' <<
-		" : Quality Factor " << '[' << threshold << ']' << endl;
+		" : Quality Factor " << '[' << ( unsigned short )threshold << ']' << endl;
 }
 
 // Called once at the start, so create things here
