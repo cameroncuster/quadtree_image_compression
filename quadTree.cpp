@@ -90,6 +90,7 @@ byte QuadTree::evalSubdivision( byte **&gray,
 void QuadTree::buildCompressedImage( byte **&gray, const node *quadrant ) const
 {
 	unsigned i, j;
+
 	if( quadrant->isLeaf( ) )
 	{
 		for( i = quadrant->topLeft.second; i < quadrant->bottomRight.second; i++ )
@@ -171,9 +172,15 @@ void QuadTree::insert( byte **&gray, node *quadrant )
 ////////////////////////////////////////////////////////////////////////////////
 void QuadTree::remove( byte **&gray, node *quadrant )
 {
+	unsigned leafNodesinSubTree = 0;
+
 	if( !evalSubdivision( gray, quadrant->topLeft, quadrant->bottomRight, 1 ) )
 	{
-		// udpate leaf node count
+		// updates leafNodesinSubTree
+		subTreeLeafNodeCount( quadrant, leafNodesinSubTree );
+
+		// leafNodeCount -= leafNodesinSubTree; *** fix for accuracy ***
+
 		clear( quadrant->nw );
 		clear( quadrant->sw );
 		clear( quadrant->ne );
@@ -191,6 +198,25 @@ void QuadTree::remove( byte **&gray, node *quadrant )
 	remove( gray, quadrant->sw );
 	remove( gray, quadrant->ne );
 	remove( gray, quadrant->se );
+}
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+///				  return the number of leaves in the subTree				 ///
+////////////////////////////////////////////////////////////////////////////////
+void QuadTree::subTreeLeafNodeCount( node *quadrant, unsigned &leafNodeCount ) const
+{
+	if( quadrant->isLeaf( ) )
+	{
+		leafNodeCount++;
+		return;
+	}
+
+	subTreeLeafNodeCount( quadrant->nw, leafNodeCount );
+	subTreeLeafNodeCount( quadrant->sw, leafNodeCount );
+	subTreeLeafNodeCount( quadrant->ne, leafNodeCount );
+	subTreeLeafNodeCount( quadrant->se, leafNodeCount );
 }
 
 

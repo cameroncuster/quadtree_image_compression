@@ -82,6 +82,9 @@ private:
 	// remove nodes the QuadTree on account of an increased threshold
 	void remove( byte **&gray, node *quadrant );
 
+	// evaluate the number of leaf nodes in the subtree ( quadrant )
+	void subTreeLeafNodeCount( node *quadrant, unsigned &leafNodeCount ) const;
+
 	// return a vector containing the boundry points of all four children of the
 	// quadrant
 	vector<pair<unsigned, unsigned>> calculateChildBoundryPoints(
