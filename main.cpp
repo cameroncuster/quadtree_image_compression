@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
 
    Application demo(argv[1], threshold);
 
-   cout << argv[1] << endl <<
+   cout << "File: " << argv[1] << endl <<
 	   "Width: " << demo.Width() << " Height: " << demo.Height() << endl;
    if (demo.Construct(demo.Width() * 2, demo.Height(), 1, 1))
       demo.Start();

@@ -31,7 +31,8 @@ void Application::output( ) const
 		"Leaf Nodes: " << quadTree->leafCount( ) << endl <<
 		"Bytes for Image: " << width * height << endl <<
 		"Bytes for QuadTree: " << 2 * quadTree->leafCount( ) << endl <<
-		"Compression: " << 100 * ( ( 2 * quadTree->leafCount( ) ) / ( width * height ) ) << endl;
+		"Compression: " << 100 * ( ( 2 * quadTree->leafCount( ) ) /
+				( width * height ) ) << endl << endl << endl;
 }
 
 // Called once at the start, so create things here
