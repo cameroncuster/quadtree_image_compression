@@ -65,10 +65,13 @@ void QuadTree::insert( byte **&gray, node *quadrant )
 	if( quadrant->nw == nullptr && quadrant->sw == nullptr &&
 			quadrant->ne == nullptr && quadrant->se == nullptr )
 	{
-		quadrant->nw = subdivide( gray, childBoundryPoints[0], childBoundryPoints[1] );
-		quadrant->sw = subdivide( gray, childBoundryPoints[2], childBoundryPoints[3] );
-		quadrant->ne = subdivide( gray, childBoundryPoints[4], childBoundryPoints[5] );
-		quadrant->se = subdivide( gray, childBoundryPoints[6], childBoundryPoints[7] );
+		if( needSubdivide( gray, quadrant->pixelValue, quadrant->topLeft, quadrant->bottomRight ) )
+		{
+			quadrant->nw = subdivide( gray, childBoundryPoints[0], childBoundryPoints[1] );
+			quadrant->sw = subdivide( gray, childBoundryPoints[2], childBoundryPoints[3] );
+			quadrant->ne = subdivide( gray, childBoundryPoints[4], childBoundryPoints[5] );
+			quadrant->se = subdivide( gray, childBoundryPoints[6], childBoundryPoints[7] );
+		}
 		return;
 	}
 
