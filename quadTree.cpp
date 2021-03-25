@@ -9,19 +9,13 @@ using namespace std;
 ///			Construct a new QuadTree given an image and a threshold			 ///
 ////////////////////////////////////////////////////////////////////////////////
 QuadTree::QuadTree( byte **&gray, const unsigned width, const unsigned height,
-		const byte thresh ) :
-	threshold( thresh ), pixelCount( width * height ), nodeCount( 0 )
+		const byte thresh ) : threshold( thresh ), nodeCount( 0 ), leafNodeCount( 0 )
 {
 	if( gray == nullptr || !width || !height )
 		throw;
 	pair<unsigned, unsigned> tl = { 0, 0 };
 	pair<unsigned, unsigned> br = { width, height };
-	leafNodeCount = 0;
-	byteCount = 0; // malloc but don't free and ask Valgrind how much I used...
-	compression = 0;
-	uncompressedSize = width * height;
 	root = subdivide( gray, tl, br );
-	printData();
 }
 
 QuadTree::~QuadTree( )
@@ -182,6 +176,7 @@ QuadTree::node *QuadTree::subdivide( byte **&gray,
 	vector<pair<unsigned, unsigned>> childBoundryPoints =
 		getChildBoundryPoints( topLeft, bottomRight );
 
+	nodeCount++;
 	node *quadrant = new node( topLeft, bottomRight,
 			evalSubdivision( gray, topLeft, bottomRight ) );
 
@@ -250,21 +245,9 @@ unsigned QuadTree::leafCount( ) const
 	return leafNodeCount;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-///					Outputs imformation about the image						 ///
-////////////////////////////////////////////////////////////////////////////////
-void QuadTree::printData( ) const
+unsigned QuadTree::size( ) const
 {
-	/*
-	// Calculate compression
-	compression = ( 200 * leafNodeCount ) / uncompressedSize;
-
-	byteCount = 56 * leafNodeCount;
-	// Output to data to console
-	cout << "Leaves = " << leafNodeCount << " mem: " << 2 * leafNodeCount
-	<< " bytes: " << byteCount << " compressed size: " << compression
-	<<"% : Quality Factor [" << int(threshold) << "]" << endl;
-	*/
+	return nodeCount;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -297,6 +280,7 @@ void QuadTree::clear( node *n )
 {
 	if( n == nullptr )
 	{
+		nodeCount--;
 		delete n;
 		return;
 	}

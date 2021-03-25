@@ -27,6 +27,9 @@ public:
 
     int Width() const;
     int Height() const;
+
+private:
+	void output( ) const;
 };
 
 #endif

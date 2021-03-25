@@ -24,6 +24,16 @@ Application::~Application( )
 	delete quadTree;
 }
 
+// Outputs information about the QuadTree and image compression
+void Application::output( ) const
+{
+	cout << "Nodes: " << quadTree->size( ) << endl <<
+		"Leaf Nodes: " << quadTree->leafCount( ) << endl <<
+		"Bytes for Image: " << width * height << endl <<
+		"Bytes for QuadTree: " << 2 * quadTree->leafCount( ) << endl <<
+		"Compression: " << 100 * ( ( 2 * quadTree->leafCount( ) ) / ( width * height ) ) << endl;
+}
+
 // Called once at the start, so create things here
 bool Application::OnUserCreate()
 {
@@ -31,19 +41,25 @@ bool Application::OnUserCreate()
 	greyScale = convertToGreyscale((int **)image, width, height);
 	compressed = convertToGreyscale((int **)image, width, height);
 	quadTree = new QuadTree( greyScale, width, height, threshold );
+	output( );
 	return true;
 }
 
 // This member function is called repeatedly until the program exits.
 bool Application::OnUserUpdate(float fElapsedTime)
 {
-	// rapid protoyping
 	if( GetKey( olc::Key::SPACE ).bPressed )
 		lines = !lines;
 	if( GetKey( olc::Key::UP ).bPressed )
+	{
 		quadTree->increaseThreshold( greyScale, width, height );
+		output( );
+	}
 	if( GetKey( olc::Key::DOWN ).bPressed )
+	{
 		quadTree->decreaseThreshold( greyScale, width, height );
+		output( );
+	}
 
 	// set the compressed image to the quadTree compressed image
 	quadTree->getCompressedImage( compressed );

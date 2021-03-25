@@ -32,12 +32,9 @@ class QuadTree
 	};
 	node *root;
 
-	unsigned pixelCount;
 	unsigned nodeCount;
 	unsigned leafNodeCount;
 	unsigned byteCount; // malloc but don't free and ask Valgrind how much I used...
-	unsigned compression;
-	unsigned uncompressedSize;
 
 	public:
 	QuadTree( byte **&gray, const unsigned width, const unsigned height,
@@ -55,7 +52,7 @@ class QuadTree
 
 	void drawLines( byte **&gray ) const;
 
-	void printData( ) const;
+	unsigned size( ) const;
 
 	private:
 	node *subdivide( byte **&gray, pair<unsigned, unsigned> topLeft,

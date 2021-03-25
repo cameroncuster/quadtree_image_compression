@@ -20,7 +20,7 @@ bool checkParameters(int argc, char **argv, int &threshold)
       usage();
       return false;
    }
-    
+
    try
    {
       threshold = stoi(argv[2]);
@@ -42,7 +42,8 @@ int main(int argc, char *argv[])
 
    Application demo(argv[1], threshold);
 
-   cout << "Width: " << demo.Width() << " Height: " << demo.Height() << endl;
+   cout << argv[1] << endl <<
+	   "Width: " << demo.Width() << " Height: " << demo.Height() << endl;
    if (demo.Construct(demo.Width() * 2, demo.Height(), 1, 1))
       demo.Start();
 
