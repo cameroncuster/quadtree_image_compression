@@ -65,7 +65,7 @@ void QuadTree::insert( byte **&gray, node *quadrant )
 	if( quadrant->nw == nullptr && quadrant->sw == nullptr &&
 			quadrant->ne == nullptr && quadrant->se == nullptr )
 	{
-		if( needSubdivide( gray, quadrant->pixelValue, quadrant->topLeft, quadrant->bottomRight ) )
+		if( needSubdivide( gray, quadrant->topLeft, quadrant->bottomRight ) )
 		{
 			quadrant->nw = subdivide( gray, childBoundryPoints[0], childBoundryPoints[1] );
 			quadrant->sw = subdivide( gray, childBoundryPoints[2], childBoundryPoints[3] );
@@ -109,7 +109,7 @@ void QuadTree::increaseThreshold( byte **&gray, const unsigned width,
 
 void QuadTree::remove( byte **&gray, node *quadrant )
 {
-	if( !needSubdivide( gray, quadrant->pixelValue, quadrant->topLeft, quadrant->bottomRight ) )
+	if( !needSubdivide( gray, quadrant->topLeft, quadrant->bottomRight ) )
 	{
 		clear( quadrant->nw );
 		clear( quadrant->sw );
@@ -207,8 +207,8 @@ QuadTree::node *QuadTree::subdivide( byte **&gray,
 	node *quadrant = new node( topLeft, bottomRight,
 			evalSubdivision( gray, topLeft, bottomRight ) );
 
-	if( !needSubdivide( gray, evalSubdivision( gray, topLeft, bottomRight ),
-				topLeft, bottomRight ) || topLeft.first - bottomRight.first < 2 ||
+	if( !needSubdivide( gray, topLeft, bottomRight ) ||
+			topLeft.first - bottomRight.first < 2 ||
 			topLeft.second - bottomRight.second < 2 )
 	{
 		leafNodeCount++;
@@ -225,11 +225,9 @@ QuadTree::node *QuadTree::subdivide( byte **&gray,
 
 ////////////////////////////////////////////////////////////////////////////////
 /// subdivide if the difference between the maximum and minimum pixel values ///
-/// in the quadrant is greater than the threshold, or if the differnce		 ///
-/// between the maximum/minimum pixel value and the parent nodes' pixel		 ///
-/// values is greater than the threshold									 ///
+/// in the quadrant is greater than the threshold							 ///
 ////////////////////////////////////////////////////////////////////////////////
-bool QuadTree::needSubdivide( byte **&gray, const byte rep,
+bool QuadTree::needSubdivide( byte **&gray,
 		const pair<unsigned, unsigned> topLeft,
 		const pair<unsigned, unsigned> bottomRight ) const
 {
@@ -244,10 +242,6 @@ bool QuadTree::needSubdivide( byte **&gray, const byte rep,
 			if( gray[i][j] < mn )
 				mn = gray[i][j];
 			if( mx - mn > threshold )
-				return 1;
-			if( abs( rep - mx ) > threshold )
-				return 1;
-			if( abs( rep - mn ) > threshold )
 				return 1;
 		}
 	return 0;
