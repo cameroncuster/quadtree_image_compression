@@ -129,6 +129,8 @@ void QuadTree::addLines( byte **&gray, const node *quadrant ) const
 		gray[ quadrant->bottomRight.second - 1 ][i] = 255;
 	}
 
+	// return if quadrant isLeaf( )
+
 	addLines( gray, quadrant->nw );
 	addLines( gray, quadrant->ne );
 	addLines( gray, quadrant->sw );
@@ -149,8 +151,7 @@ void QuadTree::getCompressedImage( byte **&gray ) const
 void QuadTree::buildCompressedImage( byte **&gray, const node *quadrant ) const
 {
 	unsigned i, j;
-	if( quadrant->nw == nullptr && quadrant->sw == nullptr &&
-			quadrant->ne == nullptr && quadrant->se == nullptr )
+	if( quadrant->isLeaf( ) )
 	{
 		for( i = quadrant->topLeft.second; i < quadrant->bottomRight.second; i++ )
 			for( j = quadrant->topLeft.first; j < quadrant->bottomRight.first; j++ )
@@ -278,11 +279,6 @@ pair<unsigned, unsigned> QuadTree::getCenter( pair<unsigned, unsigned> topLeft,
 {
 	return { topLeft.first + ( bottomRight.first - topLeft.first ) / 2,
 		topLeft.second + ( bottomRight.second - topLeft.second ) / 2 };
-}
-
-bool QuadTree::node::isLeaf( ) const
-{
-	return nw == nullptr && sw == nullptr && ne == nullptr && se == nullptr;
 }
 
 void QuadTree::clear( node *n )

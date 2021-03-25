@@ -3,11 +3,13 @@ SOURCE = application.cpp \
          readPNG.cpp \
          lodepng.cpp \
 		 quadTree.cpp \
+		 quadTreeNode.cpp \
          alloc2d.cpp
 
 SOURCE_TEST = testMain.cpp \
 			  testCases.cpp \
 			  quadTree.cpp \
+			  quadTreeNode.cpp \
 			  alloc2d.cpp
 
 OBJS = $(SOURCE:.cpp=.o)
