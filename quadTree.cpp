@@ -79,7 +79,7 @@ byte QuadTree::evalSubdivision( byte **&gray,
 		}
 	mean = sum / ( ( bottomRight.second - topLeft.second ) *
 			( bottomRight.first - topLeft.first ) ) + 0.5;
-	if( need && mx - mean <= tolerance && mean - mn <= tolerance )
+	if( need && mx - mean < tolerance && mean - mn < tolerance )
 		return 0;
 	return mean;
 }

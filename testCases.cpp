@@ -50,7 +50,7 @@ TEST_CASE( "Test Quadtree returns correct greyscale image for uniform image" )
 
 	QuadTree quadTree( testImage, width, height, thresh );
 
-	byte **compressedImage = quadTree.getCompressedImage( );
+	byte **compressedImage = quadTree.getCompressedImage( compressedImage );
 
 	for( i = 0; i < 4; i++ )
 		for( j = 0; j < 4; j++ )
@@ -92,7 +92,7 @@ TEST_CASE( "Test Quadtree returns correct greyscale image for checkerboard image
 
 	// Decreasing the threshold (increasing image quality) should increase
 	// node count
-	quadTree.decreaseThreshold( );
+	quadTree.decrementThreshold( );
 	REQUIRE( quadTree.leafCount( ) == 4 );
 
 	compressedImage = quadTree.getCompressedImage( );
