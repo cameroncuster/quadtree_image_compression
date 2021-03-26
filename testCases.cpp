@@ -1,7 +1,6 @@
 #include "catch.hpp"
 #include "quadTree.h"
 #include "alloc2d.h"
-#include <iostream>
 
 using namespace std;
 
@@ -76,7 +75,7 @@ TEST_CASE( "Test Quadtree returns correct greyscale image for checkerboard image
 	unsigned width = 4;
 	unsigned height = 4;
 	unsigned thresh = 5;
-	byte **tImage = alloc2D_byte(height, width);
+	byte **tImage = alloc2D_byte( height, width );
 
 	tImage[0][0] = tImage[0][1] = 10; tImage[0][2] = tImage[0][3] =  0;
 	tImage[1][0] = tImage[1][1] = 10; tImage[1][2] = tImage[1][3] =  0;
@@ -91,12 +90,12 @@ TEST_CASE( "Test Quadtree returns correct greyscale image for checkerboard image
 		for( j = 0; j < 4; j++ )
 			REQUIRE( compressedImage[i][j] == 5 );
 
-	REQUIRE(quadTree.leafCount() == 1);
+	REQUIRE( quadTree.leafCount( ) == 1 );
 
 	// Decreasing the threshold (increasing image quality) should increase
 	// node count
 	quadTree.decrementThreshold( tImage );
-	//REQUIRE( quadTree.leafCount( ) == 4 );
+	REQUIRE( quadTree.leafCount( ) == 4 );
 
 	compressedImage = quadTree.getCompressedImage( );
 	for( i = 0; i < 4; i++ )

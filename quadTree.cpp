@@ -1,8 +1,6 @@
 #include "quadTree.h"
 #include "alloc2d.h"
 
-#include <iostream>
-
 using namespace std;
 
 
@@ -150,6 +148,7 @@ void QuadTree::insert( byte **&gray, node *quadrant )
 			quadrant->sw = subdivide( gray, childBoundryPoints[2], childBoundryPoints[3] );
 			quadrant->ne = subdivide( gray, childBoundryPoints[4], childBoundryPoints[5] );
 			quadrant->se = subdivide( gray, childBoundryPoints[6], childBoundryPoints[7] );
+			leafNodeCount--;
 		}
 		return;
 	}
@@ -193,18 +192,18 @@ void QuadTree::remove( byte **&gray, node *quadrant )
 ////////////////////////////////////////////////////////////////////////////////
 ///				  return the number of leaves in the subTree				 ///
 ////////////////////////////////////////////////////////////////////////////////
-void QuadTree::subTreeLeafNodeCount( node *quadrant, unsigned &leafNodeCount ) const
+void QuadTree::subTreeLeafNodeCount( node *quadrant, unsigned &newLeafNodeCount ) const
 {
 	if( quadrant->isLeaf( ) )
 	{
-		leafNodeCount++;
+		newLeafNodeCount++;
 		return;
 	}
 
-	subTreeLeafNodeCount( quadrant->nw, leafNodeCount );
-	subTreeLeafNodeCount( quadrant->sw, leafNodeCount );
-	subTreeLeafNodeCount( quadrant->ne, leafNodeCount );
-	subTreeLeafNodeCount( quadrant->se, leafNodeCount );
+	subTreeLeafNodeCount( quadrant->nw, newLeafNodeCount );
+	subTreeLeafNodeCount( quadrant->sw, newLeafNodeCount );
+	subTreeLeafNodeCount( quadrant->ne, newLeafNodeCount );
+	subTreeLeafNodeCount( quadrant->se, newLeafNodeCount );
 }
 
 
