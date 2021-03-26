@@ -2,5 +2,5 @@
 
 bool QuadTree::node::isLeaf( ) const
 {
-    return nw == nullptr && sw == nullptr && ne == nullptr && se == nullptr;
+	return nw == nullptr && sw == nullptr && ne == nullptr && se == nullptr;
 }

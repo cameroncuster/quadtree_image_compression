@@ -17,18 +17,18 @@ class Application : public olc::PixelGameEngine
    QuadTree *quadTree;
    bool lines;
 public:
-    Application(const char *, byte);
-    ~Application( );
+	Application(const char *, byte);
+	~Application( );
 
 public:
-    bool OnUserCreate() override;
-    bool OnUserUpdate(float) override;
+	bool OnUserCreate() override;
+	bool OnUserUpdate(float) override;
     bool OnUserDestroy() override;
 
     int Width() const;
     int Height() const;
 
 private:
-    void informationAboutQuadTreeUpdate( ostream &out ) const;
+	void informationAboutQuadTreeUpdate( ostream &out ) const;
 };
 #endif
