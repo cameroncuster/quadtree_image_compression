@@ -118,16 +118,9 @@ void QuadTree::addLines( byte **&gray, const node *quadrant ) const
 	if( quadrant->isLeaf( ) )
 	{
 		for( i = quadrant->topLeft.second; i < quadrant->bottomRight.second; i++ )
-		{
 			gray[i][ quadrant->topLeft.first ] = 255;
-			gray[i][ quadrant->bottomRight.first - 1 ] = 255;
-		}
-
 		for( i = quadrant->topLeft.first; i < quadrant->bottomRight.first; i++ )
-		{
 			gray[ quadrant->topLeft.second ][i] = 255;
-			gray[ quadrant->bottomRight.second - 1 ][i] = 255;
-		}
 		return;
 	}
 
