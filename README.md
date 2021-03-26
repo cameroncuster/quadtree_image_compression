@@ -1,10 +1,13 @@
 Qualatative impressions and application documentation.
 
 As expected the number of leaf nodes is inversely releated to the image threshold.
+The overall compression behaves logarithmically with respect to the number of
+leaf nodes; inversely, the number of leaf nodes appears exponential with respect
+to the image compression. ACCENTUATE EXACT VALUES
 
 Application uses dependency injection as design pattern with professional coding
 standards and documentation for in-house application. The QuadTree was developed
-with rapid prototyping and test-driven-development.
+with rapid prototyping.
 
 The design leverages object oriented programming to create interfaces which are
 tested at their seams. The quadTree is implemented for high effeciency and
@@ -21,8 +24,3 @@ threshold lacks in precision it makes up for in applicability. The integer
 precision allows for better interpretation from a user ( in-general ) by element
 of least suprise. Overall the application focuses were equally performance and
 usability.
-
-Log of bug-fixes:
-* double drawing lines
-* serpinskis triangle
-* communication
