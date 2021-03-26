@@ -3,7 +3,7 @@
 
 void usage()
 {
-   std::cout << "quadTree filename.png threshold" << std::endl;
+   std::cout << "quadTree filename.png threshold[0 - 127]" << std::endl;
 }
 
 bool checkParameters(int argc, char **argv, int &threshold)
@@ -29,6 +29,12 @@ bool checkParameters(int argc, char **argv, int &threshold)
    {
       usage();
       return false;
+   }
+
+   if( threshold < 0 || threshold > 127 )
+   {
+       usage();
+       return false;
    }
    return true;
 }

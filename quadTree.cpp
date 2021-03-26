@@ -272,7 +272,11 @@ void QuadTree::clear( node *n )
 /// throws an exception of value 1 given an invalid image, width, or height  ///
 ////////////////////////////////////////////////////////////////////////////////
 QuadTree::QuadTree( byte **&gray, const unsigned width, const unsigned height,
-        const byte thresh ) : tolerance( thresh ), nodeCount( 0 ), leafNodeCount( 0 )
+        const byte thresh ) : tolerance( thresh % 128 ), nodeCount( 0 ), leafNodeCount( 0 )
+// threshold instantiated with value [0 - 127] because a threshold outside the
+// range [0 - 127] is not applicable for the application since this is the
+// limitation of a pixel value ( 255 ) ( e.a. a threshold of 127 is equivalent to any
+// threshold greater than 127 in implementation )
 {
     if( gray == nullptr || !width || !height )
         throw 1;
@@ -311,7 +315,7 @@ void QuadTree::drawLines( byte **&gray ) const
 void QuadTree::incrementThreshold( byte **&gray )
 {
     unsigned newLeafNodeCount = 0;
-    if( tolerance > 254 )
+    if( tolerance > 126 )
         return;
     tolerance++;
     remove( gray, root );
