@@ -43,7 +43,6 @@ bool Application::OnUserCreate()
 {
 	// convert RGBA Pixels into greyscale values.  0 = black ... 255 = white
 	greyScale = convertToGreyscale((int **)image, width, height);
-	compressed = convertToGreyscale((int **)image, width, height);
 	quadTree = new QuadTree( greyScale, width, height, threshold % 255 );
 	informationAboutQuadTreeUpdate( cout );
 	return true;
@@ -56,13 +55,13 @@ bool Application::OnUserUpdate(float fElapsedTime)
 		lines = !lines;
 	if( GetKey( olc::Key::UP ).bPressed )
 	{
-		quadTree->incrementThreshold( greyScale, width, height );
+		quadTree->incrementThreshold( greyScale );
 		if( threshold != quadTree->threshold( ) )
 			informationAboutQuadTreeUpdate( cout );
 	}
 	if( GetKey( olc::Key::DOWN ).bPressed )
 	{
-		quadTree->decrementThreshold( greyScale, width, height );
+		quadTree->decrementThreshold( greyScale );
 		if( threshold != quadTree->threshold( ) )
 			informationAboutQuadTreeUpdate( cout );
 	}
@@ -70,7 +69,7 @@ bool Application::OnUserUpdate(float fElapsedTime)
 	threshold = quadTree->threshold( );
 
 	// set the compressed image to the quadTree compressed image
-	quadTree->getCompressedImage( compressed );
+	compressed = quadTree->getCompressedImage( );
 
 	// draw the lines if the lines are flagged true
 	if( lines )

@@ -79,7 +79,7 @@ byte QuadTree::evalSubdivision( byte **&gray,
 		}
 	mean = sum / ( ( bottomRight.second - topLeft.second ) *
 			( bottomRight.first - topLeft.first ) ) + 0.5;
-	if( need && mx - mean < tolerance && mean - mn < tolerance )
+	if( need && mx - mean <= tolerance && mean - mn <= tolerance )
 		return 0;
 	return mean;
 }
@@ -286,9 +286,11 @@ QuadTree::QuadTree( byte **&gray, const unsigned width, const unsigned height,
 ////////////////////////////////////////////////////////////////////////////////
 ///			return the compressed image constructed from the QuadTree		 ///
 ////////////////////////////////////////////////////////////////////////////////
-void QuadTree::getCompressedImage( byte **&gray ) const
+byte **QuadTree::getCompressedImage( ) const
 {
+	byte **gray = alloc2D_byte( root->bottomRight.first, root->bottomRight.second );
 	buildCompressedImage( gray, root );
+	return gray;
 }
 
 
@@ -306,8 +308,7 @@ void QuadTree::drawLines( byte **&gray ) const
 ////////////////////////////////////////////////////////////////////////////////
 ///		   delete nodes while possible to maintain the looser threshold		 ///
 ////////////////////////////////////////////////////////////////////////////////
-void QuadTree::incrementThreshold( byte **&gray, const unsigned width,
-		const unsigned height )
+void QuadTree::incrementThreshold( byte **&gray )
 {
 	unsigned newLeafNodeCount = 0;
 	if( tolerance > 254 )
@@ -323,8 +324,7 @@ void QuadTree::incrementThreshold( byte **&gray, const unsigned width,
 ////////////////////////////////////////////////////////////////////////////////
 ///		   insert nodes as necessary to maintain the tighter threshold		 ///
 ////////////////////////////////////////////////////////////////////////////////
-void QuadTree::decrementThreshold( byte **&gray, const unsigned width,
-		const unsigned height )
+void QuadTree::decrementThreshold( byte **&gray )
 {
 	if( tolerance < 1 )
 		return;

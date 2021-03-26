@@ -40,16 +40,14 @@ public:
 			const byte thresh );
 
 	// extract the compressed image from the QuadTree
-	void getCompressedImage( byte **&gray ) const;
+	byte **getCompressedImage( ) const;
 
 	// draw the quadrant boundry lines on the compressed image
 	void drawLines( byte **&gray ) const;
 
-	void incrementThreshold( byte **&gray, const unsigned width,
-			const unsigned height );
+	void incrementThreshold( byte **&gray );
 
-	void decrementThreshold( byte **&gray, const unsigned width,
-			const unsigned height );
+	void decrementThreshold( byte **&gray );
 
 	unsigned size( ) const;
 

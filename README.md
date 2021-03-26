@@ -24,3 +24,7 @@ threshold lacks in precision it makes up for in applicability. The integer
 precision allows for better interpretation from a user ( in-general ) by element
 of least suprise. Overall the application focuses were equally performance and
 usability.
+
+Decrement threshold must be given the image used to build the quadTree, but
+increment threshold does not require the actual image due to the nature of the
+functions.
