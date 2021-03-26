@@ -23,9 +23,9 @@ QuadTree::node *QuadTree::subdivide( byte **&gray,
 	vector<pair<unsigned, unsigned>> childBoundryPoints =
 		calculateChildBoundryPoints( topLeft, bottomRight );
 
-	nodeCount++;
 	node *quadrant = new node( topLeft, bottomRight,
 			evalSubdivision( gray, topLeft, bottomRight, 0 ) );
+	nodeCount++;
 
 	if( !evalSubdivision( gray, topLeft, bottomRight, 1 ) ||
 			topLeft.first - bottomRight.first < 2 ||
@@ -269,12 +269,13 @@ void QuadTree::clear( node *n )
 
 ////////////////////////////////////////////////////////////////////////////////
 ///			Construct a new QuadTree given an image and a threshold			 ///
+///	throws an exception of value 1 given an invalid image, width, or height  ///
 ////////////////////////////////////////////////////////////////////////////////
 QuadTree::QuadTree( byte **&gray, const unsigned width, const unsigned height,
 		const byte thresh ) : tolerance( thresh ), nodeCount( 0 ), leafNodeCount( 0 )
 {
-	if( gray == nullptr || !width || !height ) // test
-		throw;
+	if( gray == nullptr || !width || !height )
+		throw 1;
 	pair<unsigned, unsigned> tl = { 0, 0 };
 	pair<unsigned, unsigned> br = { width, height };
 	root = subdivide( gray, tl, br );

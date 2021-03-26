@@ -4,7 +4,6 @@
 
 using namespace std;
 
-/*
 TEST_CASE( "Throws exception for null image" )
 {
 	unsigned width = 0;
@@ -13,7 +12,6 @@ TEST_CASE( "Throws exception for null image" )
 	byte **testImage = nullptr;
 	CHECK_THROWS( QuadTree { testImage, width, height, thresh } );
 }
-*/
 
 TEST_CASE( "Test constructor for single pixel image" )
 {
