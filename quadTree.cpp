@@ -1,6 +1,8 @@
 #include "quadTree.h"
 #include "alloc2d.h"
 
+#include <iostream>
+
 using namespace std;
 
 
@@ -165,15 +167,8 @@ void QuadTree::insert( byte **&gray, node *quadrant )
 ////////////////////////////////////////////////////////////////////////////////
 void QuadTree::remove( byte **&gray, node *quadrant )
 {
-	unsigned leafNodesinSubTree = 0;
-
 	if( !evalSubdivision( gray, quadrant->topLeft, quadrant->bottomRight, 1 ) )
 	{
-		// updates leafNodesinSubTree
-		subTreeLeafNodeCount( quadrant, leafNodesinSubTree );
-
-		// leafNodeCount -= leafNodesinSubTree; *** fix for accuracy ***
-
 		clear( quadrant->nw );
 		clear( quadrant->sw );
 		clear( quadrant->ne );
@@ -314,10 +309,13 @@ void QuadTree::drawLines( byte **&gray ) const
 void QuadTree::incrementThreshold( byte **&gray, const unsigned width,
 		const unsigned height )
 {
+	unsigned newLeafNodeCount = 0;
 	if( tolerance > 254 )
 		return;
 	tolerance++;
 	remove( gray, root );
+	subTreeLeafNodeCount( root, newLeafNodeCount );
+	leafNodeCount = newLeafNodeCount;
 }
 
 
