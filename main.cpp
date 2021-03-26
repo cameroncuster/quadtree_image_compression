@@ -31,7 +31,7 @@ bool checkParameters(int argc, char **argv, int &threshold)
       return false;
    }
 
-   if( threshold < 0 || threshold > 127 )
+   if( threshold < 0 || threshold > 128 )
    {
        usage();
        return false;

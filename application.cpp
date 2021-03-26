@@ -26,10 +26,10 @@ Application::~Application( ) { } // memory is freed in ON_USER_DESTORY
 void Application::informationAboutQuadTreeUpdate( ostream &out ) const
 {
     out << "Leaves = " << quadTree->leafCount( ) << " mem: " <<
-        2 * quadTree->leafCount( ) << " bytes: " << width * height <<
-        " compressed size: " <<
+        2 * quadTree->leafCount( ) << " bytes: " << //width * height <<
+        "compressed size: " <<
         int( 100.0 * ( ( 2.0 * ( double )quadTree->leafCount( ) )
-                    / ( double )( width * height ) )  + 0.5 ) << '%' <<
+                    / ( double )( width * height ) ) ) << '%' <<
         " : Quality Factor " << '[' << ( unsigned short )threshold << ']' << endl;
 }
 
@@ -96,6 +96,5 @@ bool Application::OnUserDestroy()
     free2D((int **)image);
     free2D(compressed);
     delete quadTree;
-    delete filename;
     return true;
 }
