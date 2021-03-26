@@ -108,28 +108,28 @@ void QuadTree::buildCompressedImage( byte **&gray, const node *quadrant ) const
 
 
 ////////////////////////////////////////////////////////////////////////////////
-///		draw the lines as directed by the dimenstions stored in each node	 ///
+///		draw the lines as directed by the dimenstions stored in the leaves	 ///
+///		node																 ///
 ////////////////////////////////////////////////////////////////////////////////
 void QuadTree::addLines( byte **&gray, const node *quadrant ) const
 {
 	unsigned i;
 
-	if( quadrant == nullptr )
+	if( quadrant->isLeaf( ) )
+	{
+		for( i = quadrant->topLeft.second; i < quadrant->bottomRight.second; i++ )
+		{
+			gray[i][ quadrant->topLeft.first ] = 255;
+			gray[i][ quadrant->bottomRight.first - 1 ] = 255;
+		}
+
+		for( i = quadrant->topLeft.first; i < quadrant->bottomRight.first; i++ )
+		{
+			gray[ quadrant->topLeft.second ][i] = 255;
+			gray[ quadrant->bottomRight.second - 1 ][i] = 255;
+		}
 		return;
-
-	for( i = quadrant->topLeft.second; i < quadrant->bottomRight.second; i++ )
-	{
-		gray[i][ quadrant->topLeft.first ] = 255;
-		gray[i][ quadrant->bottomRight.first - 1 ] = 255;
 	}
-
-	for( i = quadrant->topLeft.first; i < quadrant->bottomRight.first; i++ )
-	{
-		gray[ quadrant->topLeft.second ][i] = 255;
-		gray[ quadrant->bottomRight.second - 1 ][i] = 255;
-	}
-
-	// return if quadrant isLeaf( ) is equivalent to current base case
 
 	addLines( gray, quadrant->nw );
 	addLines( gray, quadrant->ne );
@@ -271,11 +271,11 @@ void QuadTree::clear( node *n )
 
 
 
-/*  ____        _     _ _        ___       _             __
-   |  _ \ _   _| |__ | (_) ___  |_ _|_ __ | |_ ___ _ __ / _| __ _  ___ ___
-   | |_) | | | | '_ \| | |/ __|  | || '_ \| __/ _ \ '__| |_ / _` |/ __/ _ \
-   |  __/| |_| | |_) | | | (__   | || | | | ||  __/ |  |  _| (_| | (_|  __/
-   |_|    \__,_|_.__/|_|_|\___| |___|_| |_|\__\___|_|  |_|  \__,_|\___\___|
+/*   ____        _     _ _        ___       _             __
+	|  _ \ _   _| |__ | (_) ___  |_ _|_ __ | |_ ___ _ __ / _| __ _  ___ ___
+	| |_) | | | | '_ \| | |/ __|  | || '_ \| __/ _ \ '__| |_ / _` |/ __/ _ \
+	|  __/| |_| | |_) | | | (__   | || | | | ||  __/ |  |  _| (_| | (_|  __/
+	|_|    \__,_|_.__/|_|_|\___| |___|_| |_|\__\___|_|  |_|  \__,_|\___\___|
  */
 
 
