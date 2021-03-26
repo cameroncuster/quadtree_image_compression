@@ -31,8 +31,9 @@ Application::~Application( )
 // formats information about the updated/new QuadTree and image compression for output log
 void Application::informationAboutQuadTreeUpdate( ostream &out ) const
 {
-	out << "Leaves = " << quadTree->leafCount( ) << " mem: " << width * height <<
-		" bytes: " << 2 * quadTree->leafCount( ) << " compressed size: " <<
+	out << "Leaves = " << quadTree->leafCount( ) << " mem: " <<
+		2 * quadTree->leafCount( ) << " bytes: " << width * height <<
+		" compressed size: " <<
 		int( 100.0 * ( ( 2.0 * ( double )quadTree->leafCount( ) )
 					/ ( double )( width * height ) )  + 0.5 ) << '%' <<
 		" : Quality Factor " << '[' << ( unsigned short )threshold << ']' << endl;
