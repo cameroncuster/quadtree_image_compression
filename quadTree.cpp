@@ -262,9 +262,13 @@ void QuadTree::clear( node *n )
     }
 
     clear( n->nw );
+    delete n->nw;
     clear( n->sw );
+    delete n->sw;
     clear( n->ne );
+    delete n->ne;
     clear( n->se );
+    delete n->se;
 }
 
 
@@ -284,10 +288,6 @@ void QuadTree::clear( node *n )
 ////////////////////////////////////////////////////////////////////////////////
 QuadTree::QuadTree( byte **&gray, const unsigned width, const unsigned height,
         const byte thresh ) : tolerance( thresh % 129 ), nodeCount( 0 ), leafNodeCount( 0 )
-// threshold instantiated with value [0 - 128] because a threshold outside the
-// range [0 - 128] is not applicable for the application since this is the
-// limitation of a pixel value ( 255 ) ( e.a. a threshold of 128 is equivalent to any
-// threshold greater than 128 in implementation )
 {
     if( gray == nullptr || !width || !height )
         throw 1;
