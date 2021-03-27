@@ -47,7 +47,7 @@ bool Application::OnUserCreate()
 bool Application::OnUserUpdate(float fElapsedTime)
 {
     // set the compressed image to the quadTree compressed image
-    compressed = quadTree->getCompressedImage( );
+    byte **compressed = quadTree->getCompressedImage( );
 
     // draw the lines if the lines are flagged true
     if( lines )
@@ -88,13 +88,14 @@ bool Application::OnUserUpdate(float fElapsedTime)
     // If the escape or 'q' key is pressed, exit
     return (!(GetKey(olc::Key::ESCAPE).bPressed) &&
             !(GetKey(olc::Key::Q).bPressed));
+
+    free2D( compressed );
 }
 
 bool Application::OnUserDestroy()
 {
     free2D(greyScale);
     free2D((int **)image);
-    free2D(compressed);
     delete quadTree;
     return true;
 }
