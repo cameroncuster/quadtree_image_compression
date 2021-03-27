@@ -62,13 +62,13 @@ private:
     node *subdivide( byte **&gray, pair<unsigned, unsigned> topLeft,
             pair<unsigned, unsigned> bottomRight );
 
-    // determine if a quadrant must be further subdivided
-    bool needSubdivide( byte **&gray,
+    // return the mean of the quadrant to be stored as the pixel value
+    unsigned evalSubdivision( byte **&gray,
             const pair<unsigned, unsigned> topLeft,
             const pair<unsigned, unsigned> bottomRight ) const;
 
-    // return the mean of the quadrant to be stored as the pixel value
-    unsigned evalSubdivision( byte **&gray,
+    // determine if a quadrant must be further subdivided
+    bool needSubdivide( byte **&gray,
             const pair<unsigned, unsigned> topLeft,
             const pair<unsigned, unsigned> bottomRight ) const;
 

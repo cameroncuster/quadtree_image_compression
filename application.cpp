@@ -27,7 +27,7 @@ void Application::informationAboutQuadTreeUpdate( ostream &out ) const
 {
     out << "Leaves = " << quadTree->leafCount( ) << " mem: " <<
         2 * quadTree->leafCount( ) << " bytes: " << width * height <<
-        "compressed size: " <<
+        " compressed size: " <<
         int( 100.0 * ( ( 2.0 * ( double )quadTree->leafCount( ) )
                     / ( double )( width * height ) ) ) << '%' <<
         " : Quality Factor " << '[' << ( unsigned short )threshold << ']' << endl;

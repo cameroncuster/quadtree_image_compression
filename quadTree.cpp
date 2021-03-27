@@ -45,6 +45,9 @@ QuadTree::node *QuadTree::subdivide( byte **&gray,
 
 
 
+////////////////////////////////////////////////////////////////////////////////
+///     return the mean of a quadrant for the pixelValue of the quadrant     ///
+////////////////////////////////////////////////////////////////////////////////
 unsigned QuadTree::evalSubdivision( byte **&gray,
         const pair<unsigned, unsigned> topLeft,
         const pair<unsigned, unsigned> bottomRight ) const
@@ -63,11 +66,18 @@ unsigned QuadTree::evalSubdivision( byte **&gray,
 
 
 
+////////////////////////////////////////////////////////////////////////////////
+/// return a bool indicating if a subdivision is necessary with the current  ///
+/// threshold, a subdivision is necessary if the difference between the      ///
+/// maximum/minimum values in the quadrant and the average of the quadrant's ///
+/// values is greater than the threshold                                     ///
+////////////////////////////////////////////////////////////////////////////////
 bool QuadTree::needSubdivide( byte **&gray,
         const pair<unsigned, unsigned> topLeft,
         const pair<unsigned, unsigned> bottomRight ) const
 {
     unsigned i, j;
+    unsigned mean = evalSubdivision( gray, topLeft, bottomRight );
     byte mx = gray[ topLeft.second ][ topLeft.first ];
     byte mn = gray[ topLeft.second ][ topLeft.first ];
     for( i = topLeft.second; i < bottomRight.second; i++ )
@@ -78,8 +88,7 @@ bool QuadTree::needSubdivide( byte **&gray,
             if( gray[i][j] < mn )
                 mn = gray[i][j];
         }
-    if( mx - evalSubdivision( gray, topLeft, bottomRight ) <= tolerance &&
-            evalSubdivision( gray, topLeft, bottomRight ) - mn <= tolerance )
+    if( mx - mean <= tolerance && mean - mn <= tolerance )
         return 0;
     return 1;
 }
