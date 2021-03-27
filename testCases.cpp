@@ -51,11 +51,9 @@ TEST_CASE( "Test Quadtree returns correct greyscale image for uniform image" )
     QuadTree quadTree( testImage, width, height, thresh );
 
     byte **compressedImage = quadTree.getCompressedImage( );
-
     for( i = 0; i < 4; i++ )
         for( j = 0; j < 4; j++ )
             REQUIRE( compressedImage[i][j] == 128 );
-
     free2D( testImage );
     free2D( compressedImage );
 }
@@ -83,12 +81,13 @@ TEST_CASE( "Test Quadtree returns correct greyscale image for checkerboard image
     QuadTree quadTree( tImage, width, height, thresh );
 
     byte **compressedImage = quadTree.getCompressedImage( );
-
     for( i = 0; i < 4; i++ )
         for( j = 0; j < 4; j++ )
             REQUIRE( compressedImage[i][j] == 5 );
+    free2D( compressedImage );
 
     REQUIRE( quadTree.leafCount( ) == 1 );
+
 
     // Decreasing the threshold (increasing image quality) should increase
     // node count
@@ -108,7 +107,6 @@ TEST_CASE( "Test Quadtree returns correct greyscale image for checkerboard image
             if( i > 1 && j > 1 )
                 REQUIRE( compressedImage[i][j] == 10 );
         }
-
     free2D( tImage );
     free2D( compressedImage );
 }
@@ -143,6 +141,7 @@ TEST_CASE( "Test Quadtree returns correct greyscale image for checkerboard image
             if( i > 1 && j > 1 )
                 REQUIRE( compressedImage[i][j] == 10 );
         }
+    free2D( compressedImage );
 
     // Increasing the threshold (increasing image quality) should decrease
     // node count
@@ -154,7 +153,6 @@ TEST_CASE( "Test Quadtree returns correct greyscale image for checkerboard image
     for( i = 0; i < 4; i++ )
         for( j = 0; j < 4; j++ )
             REQUIRE( compressedImage[i][j] == 5 );
-
     free2D( tImage );
     free2D( compressedImage );
 }
