@@ -184,6 +184,11 @@ void QuadTree::remove( byte **&gray, node *quadrant )
         clear( quadrant->ne );
         clear( quadrant->se );
 
+        delete quadrant->nw;
+        delete quadrant->sw;
+        delete quadrant->ne;
+        delete quadrant->se;
+
         quadrant->nw = nullptr;
         quadrant->sw = nullptr;
         quadrant->ne = nullptr;
