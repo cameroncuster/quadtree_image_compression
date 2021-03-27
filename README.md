@@ -31,8 +31,8 @@ integer value as opposed to a floating point threshold with a floating point
 increment and decrement sacrificed precision; however, while the integer
 threshold lacks in precision it makes up for in applicability. The integer
 precision allows for better interpretation from a user ( in-general ) by element
-of least surprise. Overall the application focuses were equally performance and
-usability.
+of least surprise. Overall the success of the application is reflected by the
+focuses in development which were equally performance and usability.
 
 Given the opportunity to rewrite the QuadTree we would design the QuadTree with
 an interface to a node class for testing at the seam. The node class would also

@@ -20,7 +20,7 @@ Application::Application(const char *filename, byte thresh) :
     image = (olc::Pixel **)readPNG(filename, width, height);
 }
 
-Application::~Application( ) { } // memory is freed in ON_USER_DESTORY
+Application::~Application( ) { } // memory is freed in OnUserDestroy
 
 // formats information about the updated/new QuadTree and image compression for output log
 void Application::informationAboutQuadTreeUpdate( ostream &out ) const
@@ -76,7 +76,7 @@ bool Application::OnUserUpdate(float fElapsedTime)
         }
     }
 
-    // QR IMAGE?
+    // QR image?
     // This draws the QR image into the window.
     for (int y = 0; y < ScreenHeight(); y++)
         for (int x = 0; x < ScreenWidth() / 2; x++)
