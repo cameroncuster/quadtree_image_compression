@@ -26,7 +26,7 @@ Application::~Application( ) { } // memory is freed in ON_USER_DESTORY
 void Application::informationAboutQuadTreeUpdate( ostream &out ) const
 {
     out << "Leaves = " << quadTree->leafCount( ) << " mem: " <<
-        2 * quadTree->leafCount( ) << " bytes: " << //width * height <<
+        2 * quadTree->leafCount( ) << " bytes: " << width * height <<
         "compressed size: " <<
         int( 100.0 * ( ( 2.0 * ( double )quadTree->leafCount( ) )
                     / ( double )( width * height ) ) ) << '%' <<
