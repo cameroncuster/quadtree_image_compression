@@ -49,12 +49,13 @@ bool Application::OnUserUpdate(float fElapsedTime)
     // set the compressed image to the quadTree compressed image
     byte **compressed = quadTree->getCompressedImage( );
 
-    // draw the lines if the lines are flagged true
+    // draw the lines if the lines are flagged
     if( lines )
         quadTree->drawLines( compressed );
 
     if( GetKey( olc::Key::SPACE ).bPressed )
         lines = !lines;
+
     if( GetKey( olc::Key::UP ).bPressed )
     {
         quadTree->incrementThreshold( greyScale );
@@ -64,6 +65,7 @@ bool Application::OnUserUpdate(float fElapsedTime)
             informationAboutQuadTreeUpdate( cout );
         }
     }
+
     if( GetKey( olc::Key::DOWN ).bPressed )
     {
         quadTree->decrementThreshold( greyScale );

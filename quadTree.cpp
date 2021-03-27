@@ -325,7 +325,7 @@ void QuadTree::drawLines( byte **&gray ) const
 
 
 ////////////////////////////////////////////////////////////////////////////////
-///        delete nodes while possible to maintain the looser threshold      ///
+///   delete nodes while possible to accomodate the increased threshold      ///
 ////////////////////////////////////////////////////////////////////////////////
 void QuadTree::incrementThreshold( byte **&gray )
 {
