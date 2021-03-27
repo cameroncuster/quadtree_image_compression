@@ -119,8 +119,7 @@ void QuadTree::buildCompressedImage( byte **&gray, const node *quadrant ) const
 
 
 ////////////////////////////////////////////////////////////////////////////////
-///     draw the lines as directed by the dimenstions stored in the leaves   ///
-///     node                                                                 ///
+/// draw the lines as directed by the dimensions stored in the leaves' node  ///
 ////////////////////////////////////////////////////////////////////////////////
 void QuadTree::addLines( byte **&gray, const node *quadrant ) const
 {
@@ -316,7 +315,7 @@ byte **QuadTree::getCompressedImage( ) const
 
 
 ////////////////////////////////////////////////////////////////////////////////
-///                     draw every line in the QuadTree                      ///
+///                     set all quadrant borders to white                    ///
 ////////////////////////////////////////////////////////////////////////////////
 void QuadTree::drawLines( byte **&gray ) const
 {
