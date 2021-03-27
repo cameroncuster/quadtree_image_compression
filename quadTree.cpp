@@ -24,10 +24,10 @@ QuadTree::node *QuadTree::subdivide( byte **&gray,
         calculateChildBoundryPoints( topLeft, bottomRight );
 
     node *quadrant = new node( topLeft, bottomRight,
-            evalSubdivision( gray, topLeft, bottomRight, 0 ) );
+            evalSubdivision( gray, topLeft, bottomRight ) );
     nodeCount++;
 
-    if( !evalSubdivision( gray, topLeft, bottomRight, 1 ) ||
+    if( !needSubdivide( gray, topLeft, bottomRight ) ||
             topLeft.first - bottomRight.first < 2 ||
             topLeft.second - bottomRight.second < 2 )
     {
@@ -45,41 +45,43 @@ QuadTree::node *QuadTree::subdivide( byte **&gray,
 
 
 
-////////////////////////////////////////////////////////////////////////////////
-/// behaves as a need subdivide and function while also averaging the        ///
-/// pixelVales in a given quadrant for a performance optomization            ///
-/// the function behavior is relaint on the C++ implicit boolean casting of  ///
-/// integer values because when the mean is returned the mean is alwalys     ///
-/// positive unless the mean is 0 in which case the quadrant does not need to///
-/// be subdivided by any threshold becuase every pixel in the quadrant can be///
-/// represented by a single value                                            ///
-////////////////////////////////////////////////////////////////////////////////
-byte QuadTree::evalSubdivision( byte **&gray,
+unsigned QuadTree::evalSubdivision( byte **&gray,
         const pair<unsigned, unsigned> topLeft,
-        const pair<unsigned, unsigned> bottomRight, bool need ) const
+        const pair<unsigned, unsigned> bottomRight ) const
 {
     unsigned i, j;
     unsigned sum = 0;
-    byte mean;
-    byte mx = gray[ topLeft.second ][ topLeft.first ];
-    byte mn = gray[ topLeft.second ][ topLeft.first ];
     if( bottomRight.second - topLeft.second == 0 ||
             bottomRight.first - topLeft.first == 0 )
         return 0;
     for( i = topLeft.second; i < bottomRight.second; i++ )
         for( j = topLeft.first; j < bottomRight.first; j++ )
-        {
             sum += gray[i][j];
+    return sum / ( ( bottomRight.second - topLeft.second ) *
+            ( bottomRight.first - topLeft.first ) );
+}
+
+
+
+bool QuadTree::needSubdivide( byte **&gray,
+        const pair<unsigned, unsigned> topLeft,
+        const pair<unsigned, unsigned> bottomRight ) const
+{
+    unsigned i, j;
+    byte mx = gray[ topLeft.second ][ topLeft.first ];
+    byte mn = gray[ topLeft.second ][ topLeft.first ];
+    for( i = topLeft.second; i < bottomRight.second; i++ )
+        for( j = topLeft.first; j < bottomRight.first; j++ )
+        {
             if( gray[i][j] > mx )
                 mx = gray[i][j];
             if( gray[i][j] < mn )
                 mn = gray[i][j];
         }
-    mean = sum / ( ( bottomRight.second - topLeft.second ) *
-            ( bottomRight.first - topLeft.first ) );
-    if( need && mx - mean <= tolerance && mean - mn <= tolerance )
+    if( mx - evalSubdivision( gray, topLeft, bottomRight ) <= tolerance &&
+            evalSubdivision( gray, topLeft, bottomRight ) - mn <= tolerance )
         return 0;
-    return mean;
+    return 1;
 }
 
 
@@ -142,7 +144,7 @@ void QuadTree::insert( byte **&gray, node *quadrant )
 
     if( quadrant->isLeaf( ) )
     {
-        if( evalSubdivision( gray, quadrant->topLeft, quadrant->bottomRight, 1 ) )
+        if( needSubdivide( gray, quadrant->topLeft, quadrant->bottomRight ) )
         {
             quadrant->nw = subdivide( gray, childBoundryPoints[0], childBoundryPoints[1] );
             quadrant->sw = subdivide( gray, childBoundryPoints[2], childBoundryPoints[3] );
@@ -166,7 +168,7 @@ void QuadTree::insert( byte **&gray, node *quadrant )
 ////////////////////////////////////////////////////////////////////////////////
 void QuadTree::remove( byte **&gray, node *quadrant )
 {
-    if( !evalSubdivision( gray, quadrant->topLeft, quadrant->bottomRight, 1 ) )
+    if( !needSubdivide( gray, quadrant->topLeft, quadrant->bottomRight ) )
     {
         clear( quadrant->nw );
         clear( quadrant->sw );

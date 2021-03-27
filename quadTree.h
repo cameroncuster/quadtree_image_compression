@@ -62,11 +62,15 @@ private:
     node *subdivide( byte **&gray, pair<unsigned, unsigned> topLeft,
             pair<unsigned, unsigned> bottomRight );
 
-    // determine if a quadrant must be further subdivided and return the mean of
-    // the quadrant if necessary
-    byte evalSubdivision( byte **&gray,
+    // determine if a quadrant must be further subdivided
+    bool needSubdivide( byte **&gray,
             const pair<unsigned, unsigned> topLeft,
-            const pair<unsigned, unsigned> bottomRight, bool need ) const;
+            const pair<unsigned, unsigned> bottomRight ) const;
+
+    // return the mean of the quadrant to be stored as the pixel value
+    unsigned evalSubdivision( byte **&gray,
+            const pair<unsigned, unsigned> topLeft,
+            const pair<unsigned, unsigned> bottomRight ) const;
 
     // construct an image from the QuadTree
     void buildCompressedImage( byte **&gray, const node *quadrant ) const;
