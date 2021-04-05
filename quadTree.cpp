@@ -307,7 +307,7 @@ QuadTree::QuadTree( byte **&gray, const unsigned width, const unsigned height,
 ////////////////////////////////////////////////////////////////////////////////
 byte **QuadTree::getCompressedImage( ) const
 {
-    byte **gray = alloc2D_byte( root->bottomRight.first, root->bottomRight.second );
+    byte **gray = alloc2D_byte( root->bottomRight.second, root->bottomRight.first );
     buildCompressedImage( gray, root );
     return gray;
 }
