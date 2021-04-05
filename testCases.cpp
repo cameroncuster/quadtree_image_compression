@@ -166,3 +166,53 @@ TEST_CASE( "Test Quadtree returns correct greyscale image for checkerboard image
     free2D( tImage );
     free2D( compressedImage );
 }
+
+TEST_CASE( "QuadTree returns correct greyscale image for checkerboard image of rectangular size with increment threshold" )
+{
+    unsigned i, j;
+    unsigned width = 3;
+    unsigned height = 4;
+    unsigned thresh = 4;
+    byte **tImage = alloc2D_byte( height, width );
+
+    tImage[0][0] = tImage[0][1] = 10; tImage[0][2] = 0;
+    tImage[1][0] = tImage[1][1] = 10; tImage[1][2] = 0;
+    tImage[2][0] = tImage[2][1] =  0; tImage[2][2] = 10;
+    tImage[3][0] = tImage[3][1] =  0; tImage[3][2] = 10;
+
+    QuadTree quadTree( tImage, width, height, thresh );
+
+    REQUIRE( quadTree.leafCount( ) == 10 ); // why are there 10 leaves?
+
+    byte **compressedImage = quadTree.getCompressedImage( );
+
+    for( i = 0; i < 4; i++ )
+        for( j = 0; j < 3; j++ )
+        {
+            if( i < 2 && j < 2 )
+                REQUIRE( compressedImage[i][j] == 10 );
+            if( i < 2 && j > 1 )
+                REQUIRE( compressedImage[i][j] == 0 );
+            if( i > 1 && j < 2 )
+                REQUIRE( compressedImage[i][j] == 0 );
+            if( i > 1 && j > 1 )
+                REQUIRE( compressedImage[i][j] == 10 );
+        }
+
+    free2D( compressedImage );
+
+    // Increasing the threshold (increasing image quality) should decrease
+    // node count
+    quadTree.incrementThreshold( tImage );
+
+    REQUIRE( quadTree.leafCount( ) == 1 );
+
+    compressedImage = quadTree.getCompressedImage( );
+
+    for( i = 0; i < 4; i++ )
+        for( j = 0; j < 3; j++ )
+            REQUIRE( compressedImage[i][j] == 5 );
+
+    free2D( tImage );
+    free2D( compressedImage );
+}
