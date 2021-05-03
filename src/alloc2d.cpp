@@ -1,4 +1,4 @@
-#include "alloc2d.h"
+#include "inc/alloc2d.h"
 
 // allocate a 2d array of bytes which is indexable via [row][col] notation
 byte **alloc2D_byte(int nrows, int ncols)

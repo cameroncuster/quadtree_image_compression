@@ -1,4 +1,4 @@
-#include "readPNG.h"
+#include "inc/readPNG.h"
 
 // readPNG - Read a PNG file into a two dimensional array of olc::Pixel objects
 // filename[in] character string holding the file name to read

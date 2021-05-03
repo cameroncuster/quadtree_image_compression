@@ -1,16 +1,16 @@
-SOURCE = application.cpp \
-         main.cpp \
-         readPNG.cpp \
-         lodepng.cpp \
-         quadTree.cpp \
-         quadTreeNode.cpp \
-         alloc2d.cpp
+SOURCE = src/application.cpp \
+         src/main.cpp \
+         src/readPNG.cpp \
+         src/lodepng.cpp \
+         src/quadTree.cpp \
+         src/quadTreeNode.cpp \
+         src/alloc2d.cpp
 
-SOURCE_TEST = testMain.cpp \
-              testCases.cpp \
-              quadTree.cpp \
-              quadTreeNode.cpp \
-              alloc2d.cpp
+SOURCE_TEST = test/testMain.cpp \
+              test/testCases.cpp \
+              src/quadTree.cpp \
+              src/quadTreeNode.cpp \
+              src/alloc2d.cpp
 
 OBJS = $(SOURCE:.cpp=.o)
 
@@ -42,7 +42,7 @@ tests: $(TEST_OBJS)
 	$(LINK) -o $@ $^
 
 clean:
-	rm -rf *.o *.d core quadTree tests
+	rm -rf src/*.o src/*.d core quadTree tests
 
 debug: CXXFLAGS = -DDEBUG -g -lX11 -lGL -lpng -lpthread -lstdc++fs
 debug: quadTree

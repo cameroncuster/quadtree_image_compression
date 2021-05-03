@@ -1,5 +1,5 @@
-#include "quadTree.h"
-#include "alloc2d.h"
+#include "inc/quadTree.h"
+#include "inc/alloc2d.h"
 
 using namespace std;
 
