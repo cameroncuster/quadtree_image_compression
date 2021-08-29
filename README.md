@@ -7,7 +7,9 @@ my website
 
 ## Compression Demos
 ![Image of Quadtree compressing image of Jupiter with increasing compression rate and decreasing quality factor.](res/jupiterc_compression.gif)
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 ![Image of Quadtree compressing image of U.S. Flag with increasing compression rate and decreasing quality factor.](res/flag_compression.gif)
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
 ![Image of Quadtree compressing image of x-ray of top of human head with increasing compression rate and decreasing quality factor.](res/head_compression.gif)
 
 ### Note
