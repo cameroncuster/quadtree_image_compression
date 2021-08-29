@@ -1,4 +1,5 @@
-#include "inc/application.h"
+#include "application.h"
+
 #include <iostream>
 
 using namespace std;

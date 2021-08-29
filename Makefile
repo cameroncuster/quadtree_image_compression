@@ -23,7 +23,7 @@ GCC = g++
 LINK = g++
 
 # Compiler flags
-CFLAGS = -Wall -O3 -I. 
+CFLAGS = -Wall -O3 -I inc
 CXXFLAGS = $(CFLAGS)
 
 # Fill in special libraries needed here

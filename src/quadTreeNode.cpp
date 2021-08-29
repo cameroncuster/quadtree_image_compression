@@ -1,4 +1,4 @@
-#include "inc/quadTree.h"
+#include "quadTree.h"
 
 bool QuadTree::node::isLeaf( ) const
 {

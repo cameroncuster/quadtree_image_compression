@@ -1,5 +1,5 @@
 #define OLC_PGE_APPLICATION
-#include "inc/application.h"
+#include "application.h"
 
 void usage()
 {
