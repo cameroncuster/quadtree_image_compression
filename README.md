@@ -5,7 +5,7 @@
 my website
 - the Quadtree can be used out-of-the-box and included as a library
 
-# Compression Demos
+## Compression Demos
 ![Image of Quadtree compressing image of Jupiter with increasing compression rate and decreasing quality factor.](res/jupiterc_compression.gif)
 ![Image of Quadtree compressing image of U.S. Flag with increasing compression rate and decreasing quality factor.](res/flag_compression.gif)
 ![Image of Quadtree compressing image of x-ray of top of human head with increasing compression rate and decreasing quality factor.](res/head_compression.gif)
