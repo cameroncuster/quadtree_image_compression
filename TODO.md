@@ -1,0 +1,1 @@
+- Fix bug for tall and skinny/long and wide images not compressing correctly
