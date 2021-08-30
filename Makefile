@@ -44,11 +44,11 @@ tests: $(TEST_OBJS)
 clean:
 	rm -rf src/*.o src/*.d core quadTree tests
 
-debug: CXXFLAGS = -DDEBUG -g -lX11 -lGL -lpng -lpthread -lstdc++fs
+debug: CXXFLAGS = -Wall -I inc -DDEBUG -g -lX11 -lGL -lpng -lpthread -lstdc++fs
 debug: quadTree
 
 tar: clean
-	tar zcvf quadTree.tgz $(SOURCE) *.h Makefile
+	tar zcvf quadTree.tgz $(SOURCE) inc/*.h Makefile
 
 help:
 	@echo " make quadTree  - same as make all"
