@@ -1,16 +1,22 @@
-SOURCE = src/application.cpp \
-         src/main.cpp \
-         src/readPNG.cpp \
-         src/lodepng.cpp \
-         src/quadTree.cpp \
-         src/quadTreeNode.cpp \
-         src/alloc2d.cpp
+SOURCE_DIR = src
 
-SOURCE_TEST = test/testMain.cpp \
-              test/testCases.cpp \
-              src/quadTree.cpp \
-              src/quadTreeNode.cpp \
-              src/alloc2d.cpp
+INCLUDE_DIR = inc
+
+TEST_DIR = test
+
+SOURCE = $(SOURCE_DIR)/application.cpp \
+         $(SOURCE_DIR)/main.cpp \
+         $(SOURCE_DIR)/readPNG.cpp \
+         $(SOURCE_DIR)/lodepng.cpp \
+         $(SOURCE_DIR)/quadTree.cpp \
+         $(SOURCE_DIR)/quadTreeNode.cpp \
+         $(SOURCE_DIR)/alloc2d.cpp
+
+SOURCE_TEST = $(TEST_DIR)/testMain.cpp \
+              $(TEST_DIR)/testCases.cpp \
+              $(SOURCE_DIR)/quadTree.cpp \
+              $(SOURCE_DIR)/quadTreeNode.cpp \
+              $(SOURCE_DIR)/alloc2d.cpp
 
 OBJS = $(SOURCE:.cpp=.o)
 
@@ -23,7 +29,7 @@ GCC = g++
 LINK = g++
 
 # Compiler flags
-CFLAGS = -Wall -O3 -I inc
+CFLAGS = -Wall -O3 -I $(INCLUDE_DIR)
 CXXFLAGS = $(CFLAGS)
 
 # Fill in special libraries needed here
@@ -42,13 +48,13 @@ tests: $(TEST_OBJS)
 	$(LINK) -o $@ $^
 
 clean:
-	rm -rf src/*.o src/*.d core quadTree tests
+	rm -rf $(SOURCE_DIR)/*.o $(SOURCE_DIR)/*.d core quadTree tests
 
-debug: CXXFLAGS = -Wall -I inc -DDEBUG -g -lX11 -lGL -lpng -lpthread -lstdc++fs
+debug: CXXFLAGS = -Wall -I $(INCLUDE_DIR) -DDEBUG -g -lX11 -lGL -lpng -lpthread -lstdc++fs
 debug: quadTree
 
 tar: clean
-	tar zcvf quadTree.tgz $(SOURCE) inc/*.h Makefile
+	tar zcvf quadTree.tgz $(SOURCE) $(INCLUDE_DIR)/*.h Makefile
 
 help:
 	@echo " make quadTree  - same as make all"
